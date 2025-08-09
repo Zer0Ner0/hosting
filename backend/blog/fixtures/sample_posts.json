@@ -1,0 +1,53 @@
+[
+  {
+    "model": "blog.blogpost",
+    "pk": 1,
+    "fields": {
+      "title": "Welcome to AmirHost — Fast & Secure Hosting in Malaysia",
+      "slug": "welcome-to-amirhost",
+      "excerpt": "Meet your new hosting home — built for speed, security, and simplicity.",
+      "content": "<p>We built AmirHost to make launching sites simple: fast servers, free SSL, and an easy builder.</p><p>Try the Website Builder to go live in minutes.</p>",
+      "cover_image_url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      "author_name": "Amir",
+      "tags": ["announcement", "getting-started"],
+      "published": true,
+      "published_at": "2025-08-09T00:00:00Z",
+      "created_at": "2025-08-09T00:00:00Z",
+      "updated_at": "2025-08-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "blog.blogpost",
+    "pk": 2,
+    "fields": {
+      "title": "How to Choose the Right Hosting Plan",
+      "slug": "choose-the-right-hosting-plan",
+      "excerpt": "A quick guide to Web, WordPress, WooCommerce, and Email hosting.",
+      "content": "<h2>Web vs WordPress vs WooCommerce</h2><p>Pick based on your CMS and traffic targets.</p>",
+      "cover_image_url": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      "author_name": "Team",
+      "tags": ["guides", "plans"],
+      "published": true,
+      "published_at": "2025-08-09T00:00:00Z",
+      "created_at": "2025-08-09T00:00:00Z",
+      "updated_at": "2025-08-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "blog.blogpost",
+    "pk": 3,
+    "fields": {
+      "title": "Speed Matters: 5 Tips for a Faster Site",
+      "slug": "speed-matters-5-tips",
+      "excerpt": "Caching, compression, and smart images — the quick wins.",
+      "content": "<ol><li>Enable caching</li><li>Use next-gen images</li><li>Minify assets</li></ol>",
+      "cover_image_url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+      "author_name": "Team",
+      "tags": ["performance", "guides"],
+      "published": true,
+      "published_at": "2025-08-09T00:00:00Z",
+      "created_at": "2025-08-09T00:00:00Z",
+      "updated_at": "2025-08-09T00:00:00Z"
+    }
+  }
+]

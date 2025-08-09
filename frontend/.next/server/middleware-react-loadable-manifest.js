@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"pages/builder.tsx -> @/components/builder/BuilderWizard\":{\"id\":\"pages/builder.tsx -> @/components/builder/BuilderWizard\",\"files\":[\"static/chunks/src_components_builder_BuilderWizard_tsx.js\"]}}"
