@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from decouple import config
 
@@ -138,7 +139,21 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        )
-        }
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "hosting.authentication.NextAuthJWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",  # keep or tighten per-view
+    ],
+}
+
+ENOM_UID = os.getenv("ENOM_UID", "")
+ENOM_TOKEN = os.getenv("ENOM_TOKEN", "")  # use API Token, not your password
+ENOM_ENV = os.getenv("ENOM_ENV", "test")  # "test" or "live"
+ENOM_BASE_URL = (
+    "https://resellertest.enom.com" if ENOM_ENV == "test" else "https://reseller.enom.com"
+)
+ENOM_TIMEOUT = int(os.getenv("ENOM_TIMEOUT", "10"))
+
+NEXTAUTH_SECRET = os.getenv("NEXTAUTH_SECRET", "")
