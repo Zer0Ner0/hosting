@@ -1,10 +1,15 @@
+# hosting/backend/blog/urls.py
 from django.urls import path
-from .views import BlogPostListView, BlogPostDetailView, BlogTagListView, RelatedPostsView
+from .views import (
+    BlogPostListAPI,
+    BlogPostDetailAPI,
+    TagListAPI,
+    BlogPostRelatedAPI,
+)
 
 urlpatterns = [
-    path('', BlogPostListView.as_view(), name='blog-root'),
-    path('posts/', BlogPostListView.as_view(), name='blogpost-list'),
-    path('posts/<slug:slug>/', BlogPostDetailView.as_view(), name='blogpost-detail'),
-    path('tags/', BlogTagListView.as_view(), name='blog-tags'),
-    path('posts/<slug:slug>/related/', RelatedPostsView.as_view(), name='blogpost-related'),
+    path("posts/", BlogPostListAPI.as_view(), name="blogpost-list"),
+    path("posts/<slug:slug>/", BlogPostDetailAPI.as_view(), name="blogpost-detail"),
+    path("tags/", TagListAPI.as_view(), name="blog-tags"),
+    path("posts/<slug:slug>/related/", BlogPostRelatedAPI.as_view(), name="blogpost-related"),
 ]

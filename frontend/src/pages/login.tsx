@@ -1,26 +1,39 @@
-import { signIn, useSession } from 'next-auth/react';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+// frontend/src/pages/login.tsx
+"use client";
+
+import { useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LoginPage() {
   const { status } = useSession();
-  const router = useRouter();
-  const { plan_id } = router.query;
 
+  // If already authed, bounce to home (or /checkout)
   useEffect(() => {
-    if (status === 'authenticated') {
-      router.replace(plan_id ? `/checkout?plan_id=${plan_id}` : '/checkout');
+    if (status === "authenticated") {
+      window.location.replace("/");
     }
-  }, [status, plan_id, router]);
+  }, [status]);
+
+  if (status === "loading") {
+    return (
+      <main className="container mx-auto px-4 md:px-6 py-10">
+        <p className="text-gray-600">Checking session…</p>
+      </main>
+    );
+  }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <main className="container mx-auto px-4 md:px-6 py-10">
+      <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
+      <p className="text-gray-600 mb-6">
+        Use your Google account to continue.
+      </p>
       <button
-        onClick={() => signIn('google')}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
+        onClick={() => signIn("google", { callbackUrl: "/" })}
+        className="rounded-md bg-black px-4 py-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         Sign in with Google
       </button>
-    </div>
+    </main>
   );
 }

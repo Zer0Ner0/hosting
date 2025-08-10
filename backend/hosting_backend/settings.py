@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-*(1!4&&!*_&3%6^%3#klv$*3_ma)3dvdstuj9gu-c)q3_c096(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'api',  # Assuming you have an 'api' app for API endpoints
     'blog',
     'corsheaders',  # For handling CORS
+    'web_builder',
 ]
 
 MIDDLEWARE = [

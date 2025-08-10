@@ -1,18 +1,26 @@
-export type BlogPost = {
+export type Tag = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+export type BlogPostSummary = {
   id: number;
   title: string;
   slug: string;
   excerpt: string;
-  content?: string;
-  cover_image_url?: string;
-  author_name?: string;
-  tags: string[];
-  published_at?: string;
+  cover_image?: string | null;
+  published_at: string | null;
+  tags: Tag[];
 };
 
-export interface Paginated<T> {
-  results: T[];
-  count: number;
-  page: number;
-  page_size: number;
-}
+export type AuthorMini = {
+  id: number;
+  full_name: string;
+  email: string;
+};
+
+export type BlogPost = BlogPostSummary & {
+  author: AuthorMini;
+  content: string;
+};

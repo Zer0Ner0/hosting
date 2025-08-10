@@ -1,51 +1,72 @@
-from rest_framework import generics, filters
+# hosting/backend/blog/views.py
+from typing import List
+from django.db.models import Count, Q
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Q
-from .models import BlogPost
-from .serializers import BlogPostListSerializer, BlogPostDetailSerializer
 
-class BlogPostListView(generics.ListAPIView):
+from .models import Tag, BlogPost
+from .serializers import TagSerializer, BlogPostListSerializer, BlogPostDetailSerializer
+
+
+class BlogPostListAPI(generics.ListAPIView):
     serializer_class = BlogPostListSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['title', 'content', 'excerpt', 'tags']
-    ordering_fields = ['published_at', 'title']
 
     def get_queryset(self):
-        qs = BlogPost.objects.filter(published=True)
-        tag = self.request.query_params.get('tag')
-        if tag:
-            qs = qs.filter(tags__contains=[tag])
+        qs = (
+            BlogPost.objects.filter(status=BlogPost.PUBLISHED)
+            .select_related("author")
+            .prefetch_related("tags")
+        )
+        tag_slug = self.request.query_params.get("tag")
+        if tag_slug:
+            qs = qs.filter(tags__slug=tag_slug)
         return qs
 
-class BlogPostDetailView(generics.RetrieveAPIView):
+
+class BlogPostDetailAPI(generics.RetrieveAPIView):
     serializer_class = BlogPostDetailSerializer
-    lookup_field = 'slug'
+    lookup_field = "slug"
+    queryset = (
+        BlogPost.objects.filter(status=BlogPost.PUBLISHED)
+        .select_related("author")
+        .prefetch_related("tags")
+    )
+
+
+class TagListAPI(generics.ListAPIView):
+    serializer_class = TagSerializer
 
     def get_queryset(self):
-        return BlogPost.objects.filter(published=True)
+        return (
+            Tag.objects.annotate(
+                published_count=Count("posts", filter=Q(posts__status=BlogPost.PUBLISHED))
+            )
+            .filter(published_count__gt=0)
+            .order_by("name")
+        )
 
-class BlogTagListView(APIView):
-    def get(self, request):
-        tags = set()
-        for post in BlogPost.objects.filter(published=True).only('tags'):
-            for t in (post.tags or []):
-                tags.add(t)
-        return Response(sorted(tags))
 
-class RelatedPostsView(generics.ListAPIView):
-    serializer_class = BlogPostListSerializer
-
-    def get_queryset(self):
-        slug = self.kwargs.get('slug')
+class BlogPostRelatedAPI(APIView):
+    def get(self, request, slug: str):
         try:
-            post = BlogPost.objects.get(slug=slug, published=True)
+            post = (
+                BlogPost.objects.filter(status=BlogPost.PUBLISHED)
+                .prefetch_related("tags")
+                .get(slug=slug)
+            )
         except BlogPost.DoesNotExist:
-            return BlogPost.objects.none()
-        tag_list = post.tags or []
-        if not tag_list:
-            return BlogPost.objects.filter(published=True).exclude(id=post.id)[:5]
-        q = Q()
-        for t in tag_list:
-            q |= Q(tags__contains=[t])
-        return BlogPost.objects.filter(published=True).filter(q).exclude(id=post.id).order_by('-published_at')[:5]
+            return Response({"code": "not_found", "message": "Post not found"}, status=404)
+
+        tag_ids: List[int] = list(post.tags.values_list("id", flat=True))
+        if not tag_ids:
+            return Response([])
+
+        related = (
+            BlogPost.objects.filter(status=BlogPost.PUBLISHED, tags__in=tag_ids)
+            .exclude(id=post.id)
+            .distinct()
+            .order_by("-published_at", "-created_at")[:4]
+        )
+        data = BlogPostListSerializer(related, many=True).data
+        return Response(data)

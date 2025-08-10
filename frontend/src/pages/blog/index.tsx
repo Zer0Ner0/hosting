@@ -1,89 +1,62 @@
-import Head from 'next/head';
-import { GetServerSideProps } from 'next';
-import { BlogPost } from '@/types/Blog';
-import BlogCard from '@/components/BlogCard';
-import BlogSidebar from '@/components/BlogSidebar';
+"use client";
 
-type Props = { posts: BlogPost[]; tag?: string; q?: string; page: number; count: number };
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PostCard from "@/components/PostCard";
+import TagPills from "@/components/TagPills";
+import { getBlogPosts, getTags } from "@/lib/blog";
+import type { BlogPostSummary, Tag } from "@/types/Blog";
 
-export default function BlogIndex({ posts, tag, q, page, count }: Props) {
-  const totalPages = Math.max(1, Math.ceil(count / 10));
+export default function BlogIndexPage() {
+  const { query } = useRouter();
+  const tag = typeof query.tag === "string" ? query.tag : undefined;
+
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<BlogPostSummary[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    Promise.all([getBlogPosts(tag), getTags()])
+      .then(([p, t]) => {
+        if (!mounted) return;
+        setPosts(p);
+        setTags(t);
+        setError("");
+      })
+      .catch((e) => setError(e?.message ?? "Failed to load"))
+      .finally(() => setLoading(false));
+    return () => {
+      mounted = false;
+    };
+  }, [tag]);
+
   return (
-    <>
-      <Head>
-        <title>Blog | AmirHost</title>
-        <meta name="description" content="Articles about hosting, WordPress, WooCommerce, and performance." />
-      </Head>
-      <section className="container py-12">
-        <h1 className="text-3xl font-bold">Blog</h1>
-        <div className="grid md:grid-cols-3 gap-8 mt-8">
-          <div className="md:col-span-2 space-y-6">
-            {posts.map((post) => <BlogCard key={post.id} post={post} />)}
-            <Pagination page={page} totalPages={totalPages} q={q} tag={tag} />
-          </div>
-          <div>
-            <SearchBox q={q} tag={tag} />
-            <div className="mt-6">
-              <BlogSidebar currentTag={tag} />
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+    <main className="container mx-auto px-4 md:px-6 py-10">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
+        <p className="text-gray-600 mt-1">Guides, tips and updates about domains & hosting.</p>
+      </header>
+
+      <div className="mb-8">
+        <TagPills tags={tags} />
+      </div>
+
+      {loading ? (
+        <p className="text-gray-600">Loading posts…</p>
+      ) : error ? (
+        <p className="text-red-600">{error}</p>
+      ) : posts.length === 0 ? (
+        <p className="text-gray-600">No posts yet.</p>
+      ) : (
+        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </section>
+      )}
+    </main>
   );
 }
-
-function SearchBox({ q = '', tag = '' }: { q?: string, tag?: string }) {
-  return (
-    <form className="card" method="get">
-      <h3 className="font-semibold">Search</h3>
-      <input
-        name="search"
-        className="mt-3 w-full border rounded-xl px-3 py-2"
-        placeholder="Search articles..."
-        defaultValue={q}
-      />
-      <input
-        name="tag"
-        className="mt-2 w-full border rounded-xl px-3 py-2"
-        placeholder="Tag (optional)"
-        defaultValue={tag}
-      />
-      <button className="btn mt-3" type="submit">Apply</button>
-    </form>
-  );
-}
-
-function Pagination({ page, totalPages, q = '', tag = '' }: { page: number; totalPages: number; q?: string; tag?: string }) {
-  const prev = Math.max(1, page - 1);
-  const next = Math.min(totalPages, page + 1);
-  const qs = (p: number) => {
-    const s = new URLSearchParams();
-    if (q) s.set('search', q);
-    if (tag) s.set('tag', tag);
-    s.set('page', String(p));
-    return s.toString();
-  };
-  return (
-    <div className="flex items-center justify-between">
-      <a className={`btn ${page<=1 ? 'pointer-events-none opacity-50' : ''}`} href={`?${qs(prev)}`}>Previous</a>
-      <div className="text-sm text-gray-500">Page {page} of {totalPages}</div>
-      <a className={`btn ${page>=totalPages ? 'pointer-events-none opacity-50' : ''}`} href={`?${qs(next)}`}>Next</a>
-    </div>
-  );
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
-  const { tag, search, page = '1' } = ctx.query;
-  const params = new URLSearchParams();
-  if (tag && typeof tag === 'string') params.set('tag', tag);
-  if (search && typeof search === 'string') params.set('search', search);
-  if (page && typeof page === 'string') params.set('page', page);
-  const url = `${base}/api/blog/posts/?${params.toString()}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const results = Array.isArray(data) ? data : (data.results || []);
-  const count = typeof data.count === 'number' ? data.count : results.length;
-  return { props: { posts: results, tag: tag || '', q: search || '', page: Number(page), count } };
-};
