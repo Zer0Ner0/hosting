@@ -56,10 +56,7 @@ export function saveBuilderState(state: BuilderState): void {
     }
   };
 
-  // Prefer idle, fallback to rAF
-  // @ts-expect-error - not in TS lib by default
   if (typeof requestIdleCallback === "function") {
-    // @ts-expect-error
     requestIdleCallback(doWrite, { timeout: 500 });
   } else {
     if (saveRaf) cancelAnimationFrame(saveRaf);
