@@ -7,11 +7,13 @@ import type { SectionId, TemplateSection } from "@/types/Builder";
 import { findTemplateBySlug, TEMPLATE_SECTIONS } from "@/components/web_builder/templates.data";
 import SectionManager from "@/components/web_builder/SectionManager";
 import PreviewCanvas from "@/components/web_builder/PreviewCanvas";
+import { useSession } from "next-auth/react";
+import { saveBuilderSnapshot } from "@/lib/api";
 
 export default function BuilderPreviewPage() {
   const router = useRouter();
+  const { data: session } = useSession();
 
-  // Guard until router is ready to avoid flicker/SSR mismatch
   const isReady = router.isReady;
   const slugParam = isReady ? router.query.template : undefined;
 
@@ -28,11 +30,11 @@ export default function BuilderPreviewPage() {
     [slug]
   );
 
-  // Controlled state (SectionManager will hydrate from localStorage and push updates)
   const [enabled, setEnabled] = useState<Record<SectionId, boolean>>({} as Record<SectionId, boolean>);
   const [order, setOrder] = useState<SectionId[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string>("");
 
-  // Initialise defaults whenever the canonical section list changes
   useEffect(() => {
     if (!isReady) return;
     const initEnabled: Record<SectionId, boolean> = {} as Record<SectionId, boolean>;
@@ -45,7 +47,6 @@ export default function BuilderPreviewPage() {
     setOrder(initOrder);
   }, [isReady, defaultSections]);
 
-  // Loading guard while waiting for router query to be ready
   if (!isReady) {
     return (
       <>
@@ -90,6 +91,29 @@ export default function BuilderPreviewPage() {
     );
   }
 
+  const onSave = async () => {
+    setSaveMsg("");
+    if (!session?.appToken) {
+      setSaveMsg("Please log in to save.");
+      return;
+    }
+    try {
+      setSaving(true);
+      const res = await saveBuilderSnapshot({
+        token: session.appToken as string,
+        templateSlug: slug,
+        projectName: template.title,
+        order,
+        enabled,
+      });
+      setSaveMsg(`Saved! Project #${res.projectId}, Page #${res.pageId}, blocks: ${res.synced}.`);
+    } catch (e) {
+      setSaveMsg(e instanceof Error ? e.message : "Failed to save.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -98,6 +122,21 @@ export default function BuilderPreviewPage() {
       </Head>
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+        <div className="mb-3 flex items-center justify-between">
+          <h1 className="text-xl md:text-2xl font-semibold">Website Builder – Preview</h1>
+          <div className="flex items-center gap-3">
+            {saveMsg && <span className="text-sm text-gray-600">{saveMsg}</span>}
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={saving}
+              className="inline-flex items-center rounded-xl border px-4 py-2 hover:bg-gray-50 focus:outline-none focus:ring disabled:opacity-50"
+            >
+              {saving ? "Saving…" : "Save to Project"}
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-6">
           <SectionManager
             sections={defaultSections}
