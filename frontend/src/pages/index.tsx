@@ -1,11 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
 import Layout from "@/components/Layout";
-import DomainSearchBox from "@/components/DomainSearchBox";
-import HomepageHostingPlans from "@/components/HomepageHostingPlans";
-import FaqSection from "@/components/FaqSection";
-import Testimonials from "@/components/Testimonials";
-
+import DomainSearchBox from "@/components/home/DomainSearchBox";
+import HomepageHostingPlans from "@/components/home/HomepageHostingPlans";
+import FaqSection from "@/components/home/FaqSection";
+import Testimonials from "@/components/home/Testimonials";
 import TrustBar from "@/components/home/TrustBar";
 import FeatureRow from "@/components/home/FeatureRow";
 import HighlightsStrip from "@/components/home/HighlightsStrip";
@@ -79,30 +78,24 @@ export default function HomePage() {
 
       {/* FEATURE ROWS (mirror NH’s alternating blocks) */}
       <FeatureRow
-        eyebrow="Maximum Performance"
-        title="LiteSpeed + LSCache for instant page loads"
-        copy="Our stack is tuned for speed from the kernel up. Pair LiteSpeed with NVMe storage and built-in object cache for blazing-fast sites."
-        bullets={[
-          "HTTP/3 + QUIC ready",
-          "Server-level caching (no plugins required)",
-          "NVMe SSD across all shared tiers",
-        ]}
-        imageSrc="/images/placeholders/template-1.svg"
-        imageAlt="Performance stack"
+        eyebrow="Performance"
+        title="Launch faster on NVMe + LiteSpeed"
+        copy="NVMe storage, HTTP/3, and server-level caching tuned for WordPress and custom apps."
+        bullets={["NVMe SSD", "LiteSpeed + QUIC", "Global CDN-ready"]}
+        imageSrc="/images/features/performance.jpg"
+        imageAlt="Performance stack illustration"
         imageLeft
+        imageContain // it's an SVG
       />
 
       <FeatureRow
-        eyebrow="Secure by Default"
-        title="Free SSL, WAF & malware protection"
-        copy="We harden every account with proactive security so you can focus on your business, not patches."
-        bullets={[
-          "Automatic SSL & renewals",
-          "Web Application Firewall",
-          "Daily malware scans & isolation",
-        ]}
-        imageSrc="/images/placeholders/template-2.svg"
-        imageAlt="Security overview"
+        eyebrow="Security"
+        title="Always-on protection"
+        copy="Imunify360 malware defense, Web Application Firewall, and free SSL across all plans."
+        bullets={["Imunify360", "WAF", "Auto SSL"]}
+        imageSrc="/images/features/security.jpg"
+        imageAlt="Security shield with monitoring"
+        imageContain
       />
 
       {/* SOCIAL PROOF */}

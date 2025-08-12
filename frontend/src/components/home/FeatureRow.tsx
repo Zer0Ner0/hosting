@@ -5,29 +5,36 @@ type FeatureRowProps = {
   eyebrow: string;
   title: string;
   copy: string;
-  bullets: string[];
+  bullets?: string[];
   imageSrc: string;
   imageAlt: string;
   imageLeft?: boolean;
+  /** Set true for above-the-fold images */
+  priority?: boolean;
+  /** Use contain for SVG/diagrams to avoid cropping */
+  imageContain?: boolean;
 };
 
 export default function FeatureRow({
   eyebrow,
   title,
   copy,
-  bullets,
+  bullets = [],
   imageSrc,
   imageAlt,
   imageLeft,
+  priority = false,
+  imageContain = false,
 }: FeatureRowProps) {
   const Img = (
-    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-slate-100">
+    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-white-100 shadow-lg sm:aspect-[4/3] lg:aspect-[3/2]">
       <Image
         src={imageSrc}
         alt={imageAlt}
         fill
-        className="object-cover"
-        priority={false}
+        className={imageContain ? "object-contain" : "object-cover"}
+        priority={priority}
+        sizes="(min-width: 1024px) 50vw, 100vw"
       />
     </div>
   );

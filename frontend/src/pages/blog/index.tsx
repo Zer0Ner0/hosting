@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import PostCard from "@/components/PostCard";
-import TagPills from "@/components/TagPills";
+import PostCard from "@/components/blog/PostCard";
+import TagPills from "@/components/blog/TagPills";
 import { getBlogPosts, getTags } from "@/lib/blog";
 import type { BlogPostSummary, Tag } from "@/types/Blog";
 

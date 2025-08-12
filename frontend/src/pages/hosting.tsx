@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HostingPlanList from "@/components/HostingPlanList";
+import HostingPlanList from "@/components/hosting/HostingPlanList";
 import type { Plan } from "@/types/Plan";
 import fetchJson, { type ApiError } from "@/lib/api";
 

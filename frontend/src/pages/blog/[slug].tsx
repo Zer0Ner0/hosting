@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { getBlogPost, getRelatedPosts } from "@/lib/blog";
 import type { BlogPost, BlogPostSummary } from "@/types/Blog";
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/blog/PostCard";
 
 export default function BlogDetailPage() {
   const { query } = useRouter();

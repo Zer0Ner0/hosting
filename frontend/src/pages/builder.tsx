@@ -4,7 +4,7 @@ import HeroBuilder from "@/components/web_builder/HeroBuilder";
 import FeatureHighlights from "@/components/web_builder/FeatureHighlights";
 import HowItWorks from "@/components/web_builder/HowItWorks";
 import TemplateGrid from "@/components/web_builder/TemplateGrid";
-import FaqSection from "@/components/FaqSection";
+import FaqSection from "@/components/home/FaqSection";
 
 export default function BuilderPage() {
   return (

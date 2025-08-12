@@ -2,7 +2,7 @@
 "use client";
 
 import type { SectionId, Template } from "@/types/Builder";
-import FaqSection from "@/components/FaqSection";
+import FaqSection from "@/components/home/FaqSection";
 import Link from "next/link";
 
 interface Props {
@@ -128,13 +128,13 @@ function GallerySection() {
 function PricingSection({ isFree }: { isFree: boolean }) {
   const tiers = isFree
     ? [
-        { name: "Starter", price: "RM0", features: ["Template access", "Basic sections"] },
-        { name: "Pro", price: "RM19/mo", features: ["All sections", "Custom domain", "Analytics"] },
-      ]
+      { name: "Starter", price: "RM0", features: ["Template access", "Basic sections"] },
+      { name: "Pro", price: "RM19/mo", features: ["All sections", "Custom domain", "Analytics"] },
+    ]
     : [
-        { name: "Standard", price: "RM19/mo", features: ["Template license", "Core sections"] },
-        { name: "Business", price: "RM39/mo", features: ["All sections", "Priority support", "Analytics"] },
-      ];
+      { name: "Standard", price: "RM19/mo", features: ["Template license", "Core sections"] },
+      { name: "Business", price: "RM39/mo", features: ["All sections", "Priority support", "Analytics"] },
+    ];
   return (
     <section id="pricing" className="px-4 md:px-6">
       <h3 className="text-xl md:text-2xl font-semibold">Pricing</h3>

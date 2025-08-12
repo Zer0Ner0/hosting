@@ -1,10 +1,8 @@
 // frontend/src/pages/_app.tsx
-"use client";
-
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import "@/styles/globals.css";
 import Layout from "@/components/Layout";
+import "@/styles/globals.css";
 
 export default function App({
   Component,
