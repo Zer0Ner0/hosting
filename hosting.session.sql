@@ -1,0 +1,1 @@
+SELECT * FROM hosting_hostingplan;
