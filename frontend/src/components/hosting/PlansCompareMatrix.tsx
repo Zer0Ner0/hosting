@@ -19,13 +19,21 @@ type Props = {
   enableBillingToggle?: boolean;
 };
 
-type ApiPlan = Partial<HostingPlan> & {
+type ApiPlan = Partial<Omit<HostingPlan, "features" | "id" | "name" | "price">> & {
   id: number;
   name: string;
   price: number;
   billing_cycle?: "monthly" | "yearly" | string;
   category?: Category | string;
   features?: string[] | string | null;
+};
+
+const splitFeatures = (f: ApiPlan["features"]): string[] => {
+  if (Array.isArray(f)) return f.filter(Boolean).map(s => String(s).trim());
+  if (typeof f === "string") {
+    return f.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean);
+  }
+  return [];
 };
 
 const BILLING: Array<"monthly" | "yearly"> = ["monthly", "yearly"];
@@ -78,12 +86,7 @@ export default function PlansCompareMatrix({
   // Parse each plan’s raw features (supports string or string[])
   const planRawFeatures = useMemo(() => {
     return plansForCycle.map(p => {
-      const list =
-        Array.isArray(p.features)
-          ? p.features
-          : typeof p.features === "string"
-          ? p.features.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean)
-          : [];
+      const list = splitFeatures(p.features);
       return { id: p.id, name: p.name, price: p.price, cycle: p.billing_cycle ?? billing, raw: list };
     });
   }, [plansForCycle, billing]);
