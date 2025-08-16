@@ -22,3 +22,15 @@ yarn-error.log*
 .vscode/
 .idea/
 frontend/node_modules/
+.DS_Store
+*.sqlite3
+*.log
+*.pyc
+__pycache__/
+venv/
+.env
+.env.*
+/backend/.env
+/frontend/.env.local
+*.sql
+ops/sql/
