@@ -1,110 +1,96 @@
-import React from 'react';
-import EnhancedResponsivePricingCards, { defaultPlans, type PricingPlan } from '../components/hosting/EnhancedResponsivePricingCards';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Plan } from '@/types/Plan';
+import EnhancedResponsivePricingCards from '@/components/hosting/EnhancedResponsivePricingCards';
 
 // Example of how to customize plans for different pages
-const wordpressPlans: PricingPlan[] = [
-  {
-    id: "wordpress-starter",
-    name: "WordPress Starter", 
-    description: "Perfect for WordPress beginners.",
-    originalPrice: "9.99",
-    currentPrice: "1.99",
-    savePercentage: "Save 80%",
-    term: "For 48-month term",
-    renewalPrice: "5.99",
-    buttonVariant: "outline",
-    buttonText: "Start with WordPress",
-    features: [
-      { text: "1 WordPress website", included: true, bold: "1" },
-      { text: "~10 000 visits monthly", included: true, bold: "~10 000", underlined: true },
-      { text: "50 GB SSD storage", included: true, bold: "50 GB" },
-      { text: "WordPress pre-installed", included: true, bold: "WordPress pre-installed" },
-      { text: "Free SSL certificate", included: true, bold: "Free", underlined: true },
-      { text: "WordPress auto updates", included: true },
-      { text: "Basic support", included: true },
-      { text: "WordPress staging", included: false },
-      { text: "Advanced caching", included: false },
-      { text: "Priority support", included: false }
-    ]
-  },
-  ...defaultPlans // Include the default plans
-];
-
-const emailPlans: PricingPlan[] = [
-  {
-    id: "email-professional",
-    name: "Email Professional",
-    description: "Professional email hosting for your business.",
-    originalPrice: "4.99",
-    currentPrice: "0.99",
-    savePercentage: "Save 80%",
-    term: "For 24-month term", 
-    renewalPrice: "2.99",
-    buttonVariant: "outline",
-    buttonText: "Get Email Hosting",
-    features: [
-      { text: "10 email accounts", included: true, bold: "10" },
-      { text: "25 GB storage per account", included: true, bold: "25 GB" },
-      { text: "Custom domain email", included: true, bold: "Custom domain" },
-      { text: "Webmail access", included: true },
-      { text: "IMAP/POP3 support", included: true },
-      { text: "Mobile app sync", included: true },
-      { text: "Spam protection", included: true },
-      { text: "24/7 email support", included: true }
-    ]
-  },
-  {
-    id: "email-business",
-    name: "Email Business",
-    description: "Advanced email features for growing teams.",
-    originalPrice: "8.99",
-    currentPrice: "2.99", 
-    savePercentage: "Save 67%",
-    term: "For 24-month term",
-    renewalPrice: "5.99",
-    isPopular: true,
-    buttonVariant: "filled",
-    buttonText: "Get Business Email",
-    features: [
-      { text: "50 email accounts", included: true, bold: "50" },
-      { text: "50 GB storage per account", included: true, bold: "50 GB" },
-      { text: "Custom domain email", included: true, bold: "Custom domain" },
-      { text: "Webmail access", included: true },
-      { text: "IMAP/POP3 support", included: true },
-      { text: "Mobile app sync", included: true },
-      { text: "Advanced spam protection", included: true, bold: "Advanced" },
-      { text: "Calendar integration", included: true },
-      { text: "File sharing", included: true },
-      { text: "Priority support", included: true }
-    ]
-  }
-];
 
 const HostingEnhancedPage: React.FC = () => {
+  const [webPlans, setWebPlans] = useState<Plan[]>([]);
+  const [wpPlans, setWpPlans] = useState<Plan[]>([]);
+  const [mailPlans, setMailPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const handlePlanSelection = (planId: string) => {
     console.log('Selected plan:', planId);
     // Add your plan selection logic here
     // e.g., redirect to checkout, update cart, etc.
   };
 
-  // Add plan selection handler to plans
-  const plansWithHandler = defaultPlans.map(plan => ({
-    ...plan,
-    onSelectPlan: handlePlanSelection
-  }));
+  // Fetch plans by category from backend
+  useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:8000';
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const [webRes, wpRes, mailRes] = await Promise.all([
+          fetch(`${API_BASE}/api/plans/?category=web`, { credentials: 'include' }),
+          fetch(`${API_BASE}/api/plans/?category=wordpress`, { credentials: 'include' }),
+          fetch(`${API_BASE}/api/plans/?category=email`, { credentials: 'include' }),
+        ]);
+        if (!webRes.ok || !wpRes.ok || !mailRes.ok) {
+          throw new Error('Failed to fetch one or more plan categories');
+        }
+        const [webJson, wpJson, mailJson] = await Promise.all([
+          webRes.json(),
+          wpRes.json(),
+          mailRes.json(),
+        ]);
+        setWebPlans(webJson as Plan[]);
+        setWpPlans(wpJson as Plan[]);
+        setMailPlans(mailJson as Plan[]);
+      } catch (e: any) {
+        setError(e?.message ?? 'Failed to load plans');
+      } finally {
+        setLoading(false);
+      }
+    };
+    void load();
+  }, []);
 
-  const wordpressPlansWithHandler = wordpressPlans.map(plan => ({
-    ...plan,
-    onSelectPlan: handlePlanSelection
-  }));
+  // map backend Plan -> EnhancedResponsivePricingCards input
+  const mapToPricing = (p: Plan) => {
+    // NOTE: supports both array features and semicolon string "A;B;C"
+    const featuresArray =
+      Array.isArray((p as any).features)
+        ? (p as any).features as string[]
+        : typeof (p as any).features === 'string'
+          ? ((p as any).features as string)
+              .split(';')
+              .map(s => s.trim())
+              .filter(Boolean)
+          : [];
 
-  const emailPlansWithHandler = emailPlans.map(plan => ({
-    ...plan,
-    onSelectPlan: handlePlanSelection
-  }));
+    return {
+      id: String((p as any).id ?? (p as any).pk ?? p.name),
+      name: p.name,
+      description: (p as any).description ?? '',
+      originalPrice: (p as any).originalPrice ?? '',
+      currentPrice: String(p.currentPrice),
+      savePercentage: (p as any).savePercentage ?? '',
+      term: (p as any).term ?? ((p as any).billing_cycle ?? 'Monthly'),
+      renewalPrice: (p as any).renewalPrice ?? '',
+      features: featuresArray.map(txt => ({ text: txt, included: true })),
+      isPopular: Boolean((p as any).is_popular ?? (p as any).isPopular),
+      buttonVariant: (p as any).buttonVariant ?? 'filled',
+      buttonText: (p as any).buttonText ?? 'Select',
+      onSelectPlan: handlePlanSelection,
+    };
+  };
+
+  const plansWithHandler = useMemo(() => webPlans.map(mapToPricing), [webPlans]);
+  const wordpressPlansWithHandler = useMemo(() => wpPlans.map(mapToPricing), [wpPlans]);
+  const emailPlansWithHandler = useMemo(() => mailPlans.map(mapToPricing), [mailPlans]);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {error && (
+        <div className="max-w-7xl mx-auto px-4 pt-6">
+          <div className="rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
+            {error}
+          </div>
+        </div>
+      )}
       {/* Hero Section */}
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
@@ -120,7 +106,7 @@ const HostingEnhancedPage: React.FC = () => {
       {/* Main Hosting Plans */}
       <section className="py-16">
         <EnhancedResponsivePricingCards
-          plans={plansWithHandler}
+          plans={loading ? [] : plansWithHandler}
           title="Web Hosting Plans"
           subtitle="Choose the perfect hosting plan for your website with our most popular options"
           className="mb-16"
@@ -130,7 +116,7 @@ const HostingEnhancedPage: React.FC = () => {
       {/* WordPress Specific Plans */}
       <section className="bg-white py-16">
         <EnhancedResponsivePricingCards
-          plans={wordpressPlansWithHandler}
+          plans={loading ? [] : wordpressPlansWithHandler}
           title="WordPress Hosting"
           subtitle="Optimized hosting solutions specifically designed for WordPress websites"
           showFeatureLimit={10}
@@ -140,7 +126,7 @@ const HostingEnhancedPage: React.FC = () => {
       {/* Email Hosting Plans */}
       <section className="py-16">
         <EnhancedResponsivePricingCards
-          plans={emailPlansWithHandler}
+          plans={loading ? [] : emailPlansWithHandler}
           title="Email Hosting"
           subtitle="Professional email hosting solutions for your business"
           showFeatureLimit={8}
