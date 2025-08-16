@@ -8,7 +8,7 @@ export function getCart(): CartItem[] {
   return raw ? (JSON.parse(raw) as CartItem[]) : [];
 }
 
-export function setCart(items: CartItem[]) {
+function setCart(items: CartItem[]) {
   localStorage.setItem(KEY, JSON.stringify(items));
 }
 

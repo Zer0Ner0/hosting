@@ -3,8 +3,7 @@ import DomainSearchBox from "@/components/home/DomainSearchBox";
 import TrustBar from "@/components/home/TrustBar";
 import FAQ from "@/components/common/FAQ";
 import BenefitsStrip from "@/components/common/BenefitsStrip";
-import PlansCompareMatrix from "@/components/hosting/PlansCompareMatrix";
-import { EMAIL_FEATURE_TOOLTIPS } from "@/content/tooltips/email";
+import HomepageHostingPlans from "@/components/home/HomepageHostingPlans";
 
 export default function WebHostingPage() {
   const faqs = [
@@ -67,24 +66,19 @@ export default function WebHostingPage() {
 
       <BenefitsStrip items={benefits} />
 
-      <PlansCompareMatrix
-              category="web"
-              title="Web Hosting plans & features"
-              subtitle="Pick a plan and compare what's included."
-              features={[
-                "Web Storage",
-                "Web Accounts",
-                "POP3/IMAP/SMTP",
-                "Web Based Email",
-                "Superior Spam Protection",
-                "Premium Email Deliverability",
-                "Integrated Calendar",
-                "FREE Migration",
-                "30-Day Money-Back",
-              ]}
-              featureTooltips={EMAIL_FEATURE_TOOLTIPS}
-              enableBillingToggle={true}
-            />
+      <section aria-label="Popular plans" className="bg-white">
+              <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+                <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#2F1C6A] font-['DM_Sans']">
+                  Everything you need to succeed online
+                </h2>
+                <p className="mx-auto mt-2 max-w-2xl text-center text-[#727586] font-['DM_Sans']">
+                  Choose a plan and scale when you grow.
+                </p>
+                <div className="mt-8">
+                  <HomepageHostingPlans />
+                </div>
+              </div>
+            </section>
 
       <FAQ items={faqs} heading="Web Hosting FAQs" subheading="Quick answers to common questions." />
     </>

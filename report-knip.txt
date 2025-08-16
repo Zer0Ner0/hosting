@@ -1,0 +1,2 @@
+Unused devDependencies (1)
+package.json: @eslint/eslintrc, @typescript-eslint/parser, dependency-cruiser, glob, unimported

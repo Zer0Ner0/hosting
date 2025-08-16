@@ -1,35 +1,5 @@
 import React, { useState } from 'react';
-
-export interface PricingFeature {
-  text: string;
-  included: boolean;
-  bold?: string;
-  underlined?: boolean;
-}
-
-export interface PricingPlan {
-  id: string;
-  name: string;
-  description: string;
-  originalPrice: string;
-  currentPrice: string;
-  savePercentage: string;
-  term: string;
-  renewalPrice: string;
-  features: PricingFeature[];
-  isPopular?: boolean;
-  buttonVariant: 'outline' | 'filled';
-  buttonText?: string;
-  onSelectPlan?: (planId: string) => void;
-}
-
-export interface EnhancedResponsivePricingCardsProps {
-  plans: PricingPlan[];
-  title?: string;
-  subtitle?: string;
-  className?: string;
-  showFeatureLimit?: number;
-}
+import type { Plan, PricingFeature, EnhancedResponsivePricingCardsProps } from "@/types/Plan";
 
 const CheckIcon = () => (
   <svg width="16" height="12" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +56,7 @@ const FeatureItem: React.FC<{ feature: PricingFeature }> = ({ feature }) => {
 };
 
 const PricingCard: React.FC<{ 
-  plan: PricingPlan; 
+  plan: Plan; 
   showFeatureLimit?: number;
   className?: string;
 }> = ({ plan, showFeatureLimit = 15, className = '' }) => {
@@ -239,106 +209,5 @@ const EnhancedResponsivePricingCards: React.FC<EnhancedResponsivePricingCardsPro
     </div>
   );
 };
-
-// Default plans data for backward compatibility
-export const defaultPlans: PricingPlan[] = [
-  {
-    id: "premium",
-    name: "Premium",
-    description: "Everything you need to create your website.",
-    originalPrice: "11.99",
-    currentPrice: "2.99",
-    savePercentage: "Save 75%",
-    term: "For 48-month term",
-    renewalPrice: "7.99",
-    buttonVariant: "outline",
-    features: [
-      { text: "100 websites", included: true, bold: "100", underlined: true },
-      { text: "~25 000 visits monthly", included: true, bold: "~25 000", underlined: true },
-      { text: "100 GB SSD storage", included: true, bold: "100 GB" },
-      { text: "400 000 files and directories (inodes)", included: true, bold: "400 000", underlined: true },
-      { text: "Free pre-built templates", included: true, bold: "Free" },
-      { text: "Free automatic website migration", included: true, bold: "Free", underlined: true },
-      { text: "Unlimited free SSL", included: true, bold: "Unlimited free", underlined: true },
-      { text: "Free email", included: true, bold: "Free", underlined: true },
-      { text: "Weekly Backups", included: true, bold: "Weekly", underlined: true },
-      { text: "WordPress vulnerabilities scanner", included: true, underlined: true },
-      { text: "WordPress auto updates", included: true },
-      { text: "Standard WordPress acceleration", included: true, bold: "Standard", underlined: true },
-      { text: "Unlimited bandwidth", included: true, bold: "Unlimited", underlined: true },
-      { text: "Free domain ($9.99 value)", included: true, bold: "Free", underlined: true },
-      { text: "Free CDN", included: false, underlined: true },
-      { text: "WordPress AI tools", included: false, underlined: true },
-      { text: "WordPress staging tool", included: false, underlined: true },
-      { text: "Dedicated IP address", included: false, underlined: true },
-      { text: "Priority support", included: false }
-    ]
-  },
-  {
-    id: "business",
-    name: "Business",
-    description: "Level up with more power and enhanced features.",
-    originalPrice: "13.99",
-    currentPrice: "3.99",
-    savePercentage: "Save 71%",
-    term: "For 48-month term",
-    renewalPrice: "8.99",
-    isPopular: true,
-    buttonVariant: "filled",
-    features: [
-      { text: "100 websites", included: true, bold: "100", underlined: true },
-      { text: "~100 000 visits monthly", included: true, bold: "~100 000", underlined: true },
-      { text: "200 GB NVMe storage", included: true, bold: "200 GB" },
-      { text: "600 000 files and directories (inodes)", included: true, bold: "600 000", underlined: true },
-      { text: "Free pre-built templates", included: true, bold: "Free" },
-      { text: "Free automatic website migration", included: true, bold: "Free", underlined: true },
-      { text: "Unlimited free SSL", included: true, bold: "Unlimited free", underlined: true },
-      { text: "Free email", included: true, bold: "Free", underlined: true },
-      { text: "Daily and on-demand backups", included: true, bold: "Daily and on-demand", underlined: true },
-      { text: "WordPress vulnerabilities scanner", included: true, underlined: true },
-      { text: "Smart WordPress auto updates", included: true, bold: "Smart", underlined: true },
-      { text: "Advanced WordPress acceleration", included: true, bold: "Advanced", underlined: true },
-      { text: "Unlimited bandwidth", included: true, bold: "Unlimited", underlined: true },
-      { text: "Free domain ($9.99 value)", included: true, bold: "Free", underlined: true },
-      { text: "Free CDN", included: true, bold: "Free", underlined: true },
-      { text: "WordPress AI tools", included: true, underlined: true },
-      { text: "WordPress staging tool", included: true, underlined: true },
-      { text: "Dedicated IP address", included: false, underlined: true },
-      { text: "Priority support", included: false }
-    ]
-  },
-  {
-    id: "cloud-startup",
-    name: "Cloud Startup",
-    description: "Enjoy optimized performance & powerful resources.",
-    originalPrice: "24.99",
-    currentPrice: "7.99",
-    savePercentage: "Save 68%",
-    term: "For 48-month term",
-    renewalPrice: "19.99",
-    buttonVariant: "outline",
-    features: [
-      { text: "300 websites", included: true, bold: "300", underlined: true },
-      { text: "~200 000 visits monthly", included: true, bold: "~200 000", underlined: true },
-      { text: "200 GB NVMe storage", included: true, bold: "200 GB" },
-      { text: "2 000 000 files and directories (inodes)", included: true, bold: "2 000 000", underlined: true },
-      { text: "Free pre-built templates", included: true, bold: "Free" },
-      { text: "Free automatic website migration", included: true, bold: "Free", underlined: true },
-      { text: "Unlimited free SSL", included: true, bold: "Unlimited free", underlined: true },
-      { text: "Free email", included: true, bold: "Free", underlined: true },
-      { text: "Daily and on-demand backups", included: true, bold: "Daily and on-demand", underlined: true },
-      { text: "WordPress vulnerabilities scanner", included: true, underlined: true },
-      { text: "Smart WordPress auto updates", included: true, bold: "Smart", underlined: true },
-      { text: "Advanced WordPress acceleration", included: true, bold: "Advanced", underlined: true },
-      { text: "Unlimited bandwidth", included: true, bold: "Unlimited", underlined: true },
-      { text: "Free domain ($9.99 value)", included: true, bold: "Free", underlined: true },
-      { text: "Free CDN", included: true, bold: "Free", underlined: true },
-      { text: "WordPress AI tools", included: true, underlined: true },
-      { text: "WordPress staging tool", included: true, underlined: true },
-      { text: "Dedicated IP address", included: true, underlined: true },
-      { text: "Priority support", included: true }
-    ]
-  }
-];
 
 export default EnhancedResponsivePricingCards;

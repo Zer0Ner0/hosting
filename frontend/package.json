@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check:deps": "depcheck",
+    "check:tsprune": "ts-prune -p tsconfig.json",
+    "check:knip": "knip --reporter compact",
+    "check:graph": "madge --circular --extensions ts,tsx --image dependency-graph.svg src",
+    "fix:imports": "eslint \"src/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -14,9 +19,6 @@
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.16",
-    "axios": "^1.6.7",
-    "clsx": "^2.0.0",
-    "jose": "^6.0.12",
     "lucide-react": "^0.539.0",
     "next": "^14.2.31",
     "next-auth": "^4.24.11",
@@ -30,18 +32,23 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.33.0",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
     "depcheck": "^1.4.7",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "14.1.0",
+    "dependency-cruiser": "^17.0.1",
+    "eslint": "^9.33.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "glob": "^10.4.5",
-    "madge": "^6.1.0",
-    "ts-prune": "^0.10.3"
-  },
-  "overrides": {
-    "@typescript-eslint/parser": "6.21.0",
-    "@typescript-eslint/eslint-plugin": "6.21.0"
+    "knip": "^5.62.0",
+    "madge": "^8.0.0",
+    "ts-prune": "^0.10.3",
+    "typescript-eslint": "^8.39.1",
+    "unimported": "^1.31.0"
   }
 }

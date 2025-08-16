@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router'
-import { Plan } from '@/types/Plan'
-import EnhancedResponsivePricingCards, {
-  type PricingPlan,
-} from './EnhancedResponsivePricingCards'
+import { Plan, PricingFeature } from '@/types/Plan'
+import EnhancedResponsivePricingCards from '@/components/hosting/EnhancedResponsivePricingCards'
 
 type Props = {
   plans: Plan[]
@@ -23,32 +21,53 @@ export default function HostingPlanList({
     return <p className="text-center text-[#727586]">No plans available for this category.</p>
   }
 
-  const mapped: PricingPlan[] = plans.map((p) => {
-    const price = parseFloat(p.price || '0') || 0
+  const mapped: Plan[] = plans.map((p) => {
+    const price = parseFloat(p.originalPrice || '0') || 0
     const original = (price * 1.5).toFixed(2)
     const renewal = (price * 1.2).toFixed(2)
     const savePct = Math.max(0, Math.round((1 - price / parseFloat(original)) * 100))
+
     return {
       id: String(p.id),
       name: p.name,
       description: `Perfect for ${p.name.toLowerCase()} websites.`,
+      category: p.category,
+      billing_cycle: p.billing_cycle,
       originalPrice: original,
       currentPrice: price.toFixed(2),
       savePercentage: `Save ${savePct}%`,
-      term:
-        p.billing_cycle === 'yearly'
-          ? 'For 12-month term'
-          : 'For monthly term',
+      term: p.billing_cycle === 'yearly' ? 'For 12-month term' : 'For monthly term',
       renewalPrice: renewal,
-      features: (p.feature_list || []).map((text) => ({
-        text,
-        included: true,
-      })),
-      isPopular: p.is_popular,
-      buttonVariant: p.is_popular ? 'filled' : 'outline',
+      features: (p.features || []).map((feature): PricingFeature => {
+        // Handle different input types
+        if (typeof feature === 'string') {
+          return {
+            text: feature,
+            included: true,
+          };
+        }
+
+        // If it's already a PricingFeature object
+        if (typeof feature === 'object' && feature.text) {
+          return {
+            text: feature.text,
+            included: true,
+            bold: feature.bold,
+            underlined: feature.underlined,
+          };
+        }
+
+        // Fallback for any other case
+        return {
+          text: String(feature),
+          included: true,
+        };
+      }),
+      isPopular: p.isPopular || false,
+      buttonVariant: (p.isPopular || false) ? 'filled' : 'outline',
       buttonText: 'Get Started',
       onSelectPlan: () => router.push(`/login?plan_id=${p.id}`),
-    }
+    };
   })
 
   return (

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "src/pages/**/*.tsx",
+    "src/components/**/*.tsx",
+    "src/lib/**/*.ts",
+    "src/types/**/*.ts"
+  ],
+  "ignore": [
+    "src/pages/**/_app.tsx",
+    "src/pages/**/_document.tsx",
+    "public/**/*",
+    "eslint.config.mjs",
+    "next.config.*",
+    "postcss.config.*",
+    "tailwind.config.*"
+  ],
+  "ignoreDependencies": ["next", "react", "react-dom", "next-auth"]
+}

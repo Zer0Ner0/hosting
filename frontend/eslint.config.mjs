@@ -1,44 +1,46 @@
-// frontend/eslint.config.mjs
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-// Flat config extras
-import tsParser from "@typescript-eslint/parser";
+// eslint.config.mjs — flat config, no eslint-config-next
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+import importPlugin from "eslint-plugin-import";
 import unusedImports from "eslint-plugin-unused-imports";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
 export default [
-  // ignore build outputs
-  { ignores: ["node_modules/**", ".next/**", "dist/**", "out/**"] },
+  // ignore build/output
+  { ignores: [".next/**", "node_modules/**", "dist/**", "public/**"] },
 
-  // Next + TypeScript rules (no "next/typescript")
-  ...compat.extends("next/core-web-vitals", "plugin:@typescript-eslint/recommended"),
+  // JS base
+  js.configs.recommended,
 
-  // Ensure the TS parser is used on TS files
+  // TS base (type-aware)
+  ...tseslint.configs.recommendedTypeChecked,
+
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      parser: tsParser,
-      parserOptions: { sourceType: "module" },
+      parser: tseslint.parser,
+      parserOptions: { project: "./tsconfig.json" },
     },
-  },
-
-  // Unused imports plugin/rules
-  {
-    plugins: { "unused-imports": unusedImports },
+    plugins: {
+      react,
+      "react-hooks": reactHooks,
+      "jsx-a11y": jsxA11y,
+      import: importPlugin,
+      "unused-imports": unusedImports,
+    },
     rules: {
+      "react/react-in-jsx-scope": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      "no-unused-vars": ["warn", { args: "none", ignoreRestSiblings: true }],
+      "import/no-extraneous-dependencies": [
+        "error",
+        { devDependencies: ["**/*.config.*", "**/*.test.*"] },
       ],
     },
+    settings: { react: { version: "detect" } },
   },
 ];

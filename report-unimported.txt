@@ -1,0 +1,39 @@
+
+       summary               unimported v1.31.0 (next)
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       entry file 1        : ./src/pages/_app.tsx
+       entry file 2        : ./src/pages/api/auth/[...nextauth].ts
+       entry file 3        : ./src/pages/api/signup.ts
+       entry file 4        : ./src/pages/blog/[slug].tsx
+       entry file 5        : ./src/pages/blog/index.tsx
+       entry file 6        : ./src/pages/builder.tsx
+       entry file 7        : ./src/pages/builder/preview.tsx
+       entry file 8        : ./src/pages/cart.tsx
+       entry file 9        : ./src/pages/checkout.tsx
+       entry file 10       : ./src/pages/hosting-enhanced.tsx
+       entry file 11       : ./src/pages/hosting.tsx
+       entry file 12       : ./src/pages/hosting/email.tsx
+       entry file 13       : ./src/pages/hosting/web.tsx
+       entry file 14       : ./src/pages/hosting/woocommerce.tsx
+       entry file 15       : ./src/pages/hosting/wordpress.tsx
+       entry file 16       : ./src/pages/index.tsx
+       entry file 17       : ./src/pages/login.tsx
+       entry file 18       : ./src/pages/signup.tsx
+
+       unresolved imports  : 0
+       unused dependencies : 5
+       unimported files    : 0
+
+
+─────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     │ 5 unused dependencies
+─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1 │ @types/node
+   2 │ @types/react-dom
+   3 │ autoprefixer
+   4 │ tailwindcss
+   5 │ typescript
+─────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+       Inspect the results and run npx unimported -u to update ignore lists

@@ -33,7 +33,7 @@ export default async function fetchJson<T>(path: string, init?: RequestInit): Pr
 // --- Builder API helpers (append) ---
 const API_BASE_BUILDER = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
 
-export interface BuilderProject {
+interface BuilderProject {
   id: number;
   name: string;
   template_slug: string;
@@ -45,7 +45,7 @@ export interface BuilderProject {
   updated_at: string;
 }
 
-export interface BuilderPage {
+interface BuilderPage {
   id: number;
   project: number;
   name: string;
@@ -58,7 +58,7 @@ export interface BuilderPage {
   updated_at: string;
 }
 
-export interface SyncBlocksResult {
+interface SyncBlocksResult {
   code: "ok";
   message: string;
   count: number;
@@ -66,23 +66,25 @@ export interface SyncBlocksResult {
 
 type Json = Record<string, unknown>;
 
+type JsonInit = Omit<RequestInit, "body"> & { body?: Json | string };
+
 function authFetch<T = unknown>(
   path: string,
   token: string,
-  init?: RequestInit & { body?: Json | string }
+  init?: JsonInit
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
-  const body =
+  const body: BodyInit | undefined =
     typeof init?.body === "string"
       ? init.body
-      : init?.body
+      : init?.body !== undefined
       ? JSON.stringify(init.body)
       : undefined;
 
-  return fetch(`${API_BASE_BUILDER}${path}`, { ...init, headers, body }).then(async (r) => {
+  return fetch(`${API_BASE_BUILDER}${path}`, { ...(init as RequestInit), headers, body }).then(async (r) => {
     const text = await r.text();
     const data = text ? (JSON.parse(text) as T) : (undefined as unknown as T);
     if (!r.ok) {
