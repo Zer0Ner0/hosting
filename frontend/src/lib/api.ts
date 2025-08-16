@@ -173,3 +173,17 @@ export async function saveBuilderSnapshot(params: {
 
   return { projectId: project.id, pageId: page.id, synced: res.count };
 }
+
+export async function registerAccount(payload: any) {
+  const base = process.env.NEXT_PUBLIC_API_BASE;
+  const res = await fetch(`${base}/api/register/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail || "Registration failed");
+  }
+  return res.json();
+}

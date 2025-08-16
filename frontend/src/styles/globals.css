@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --Branding-hostinger-Periwinkle: #D5DFFF;
+  --Branding-hostinger-White: #FFF;
+  --Branding-hostinger-Meteorite: #2F1C6A;
+  --Branding-hostinger-Storm-Gray: #727586;
+  --Branding-hostinger-Royal-Blue: #673DE6;
+  --Branding-hostinger-Malibu: #8C85FF;
+  --Branding-hostinger-Zircon: #FAFBFF;
+}

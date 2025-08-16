@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { addToCart } from "@/lib/cart";
 
 type Suggestion = {
   sld: string;
@@ -38,6 +39,28 @@ export default function DomainSearchBox() {
     setSelectedTlds((cur) =>
       cur.includes(tld) ? cur.filter((x) => x !== tld) : [...cur, tld]
     );
+  }
+
+  // Convert registration price (major units) -> cents (minor units)
+  function priceCents(s: Suggestion): number {
+    if (s.available && s.price && typeof s.price.registration === "number") {
+      return Math.round(s.price.registration * 100);
+    }
+    return 999; // fallback $9.99
+  }
+
+  function addDomainToCart(s: Suggestion) {
+    if (!s.available) return;
+    addToCart({
+      item_type: "domain",
+      name: s.domain,
+      sku: s.domain,
+      quantity: 1,
+      unit_amount_cents: priceCents(s),
+      currency: (s.price?.currency || "USD").toLowerCase(),
+    });
+    // Simple UX: go to cart after adding
+    window.location.href = "/cart";
   }
 
   async function onSearch(e: React.FormEvent) {
@@ -129,13 +152,15 @@ export default function DomainSearchBox() {
                   )}
 
                   <div className="mt-3 flex items-center justify-between">
-                    <a
-                      href={`/checkout?domain=${encodeURIComponent(s.domain)}`}
-                      className={`rounded-md px-3 py-2 text-sm ${s.available ? "bg-indigo-600 text-white hover:bg-indigo-500" : "bg-gray-100 text-gray-500 cursor-not-allowed"}`}
+                    <button
+                      type="button"
+                      onClick={() => addDomainToCart(s)}
+                      disabled={!s.available}
+                      className={`rounded-md px-3 py-2 text-sm ${s.available ? "bg-emerald-600 text-white hover:bg-emerald-500" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`}
                       aria-disabled={!s.available}
                     >
-                      {s.available ? "Register" : "Unavailable"}
-                    </a>
+                      {s.available ? "Add to cart" : "Unavailable"}
+                    </button>
                     <button
                       type="button"
                       onClick={() => setQuery(s.sld)}

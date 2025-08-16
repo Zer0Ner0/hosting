@@ -1,3 +1,4 @@
+# backend/hosting_backend/settings.py
 """
 Django settings for hosting_backend project.
 
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'blog',
     'corsheaders',  # For handling CORS
     'web_builder',
+    "drf_spectacular",
+    "drf_spectacular_sidecar",  # swagger-ui static assets (no CDN)
 ]
 
 MIDDLEWARE = [
@@ -149,6 +152,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",  # keep or tighten per-view
     ],
+
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 ENOM_UID = os.getenv("ENOM_UID", "")
@@ -160,3 +165,32 @@ ENOM_BASE_URL = (
 ENOM_TIMEOUT = int(os.getenv("ENOM_TIMEOUT", "10"))
 
 NEXTAUTH_SECRET = os.getenv("NEXTAUTH_SECRET", "")
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "usd")
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Hosting API",
+    "DESCRIPTION": "OpenAPI schema for plans, checkout, blog, domain, and builder endpoints.",
+    "VERSION": "1.0.0",
+    # Document JWT bearer (NextAuth-issued) as default security
+    "SECURITY": [{"JWTAuth": []}],
+    "COMPONENTS": {
+        "securitySchemes": {
+            "JWTAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+            }
+        }
+    },
+    "TAGS": [
+        {"name": "Auth", "description": "Registration & authentication"},
+        {"name": "Plans", "description": "Hosting plans & checkout"},
+        {"name": "Blog", "description": "Posts, tags, related"},
+        {"name": "Domain", "description": "Enom-based domain lookup"},
+        {"name": "Builder", "description": "Projects, pages, blocks"},
+    ],
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],  # allow viewing docs
+}

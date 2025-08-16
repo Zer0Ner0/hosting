@@ -1,11 +1,15 @@
 import Link from "next/link";
 import * as React from "react";
+import { useSession, signOut } from "next-auth/react";
 import MegaMenu, { MegaMenuItem } from "./MegaMenu";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [hostingOpen, setHostingOpen] = React.useState(false);
   const closeTimer = React.useRef<number | null>(null);
+  const { data: session } = useSession();
+  const isAuthed = !!session;
+
 
   const openHosting = () => {
     if (closeTimer.current) { window.clearTimeout(closeTimer.current); closeTimer.current = null; }
@@ -20,10 +24,10 @@ export default function Navbar() {
   };
 
   const HOSTING_ITEMS: MegaMenuItem[] = [
-    { label: "Web Hosting", href: "/hosting?tab=web", description: "Fast cPanel hosting for sites of any size." },
-    { label: "WordPress Hosting", href: "/hosting?tab=wordpress", description: "Optimized stack for WordPress." },
-    { label: "WooCommerce Hosting", href: "/hosting?tab=woocommerce", description: "Power your online store quickly." },
-    { label: "Email Hosting", href: "/hosting?tab=email", description: "Professional email on your domain." },
+    { label: "Web Hosting", href: "/hosting/web", description: "Fast cPanel hosting for sites of any size." },
+    { label: "WordPress Hosting", href: "/hosting/wordpress", description: "Optimized stack for WordPress." },
+    { label: "WooCommerce Hosting", href: "/hosting/woocommerce", description: "Power your online store quickly." },
+    { label: "Email Hosting", href: "/hosting/email", description: "Professional email on your domain." },
   ];
 
   // Close mega on scroll/nav route changes if needed
@@ -101,12 +105,21 @@ export default function Navbar() {
 
           {/* Right: CTA + Mobile toggle */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 md:inline-block"
-            >
-              Account
-            </Link>
+            {isAuthed ? (
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="hidden rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200 md:inline-block"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 md:inline-block"
+              >
+                Login
+              </Link>
+            )}
             <button
               className="inline-flex items-center rounded-md border border-gray-300 px-3 py-2 text-sm md:hidden"
               aria-expanded={mobileOpen}
@@ -175,12 +188,28 @@ export default function Navbar() {
               Blog
             </Link>
             <Link
-              href="/login"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-              onClick={() => setMobileOpen(false)}
-            >
-              Account
-            </Link>
+              href="#"
+              className="sr-only"
+            />
+            {isAuthed ? (
+              <button
+                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"
+                onClick={() => {
+                  setMobileOpen(false);
+                  signOut({ callbackUrl: "/" });
+                }}
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                onClick={() => setMobileOpen(false)}
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -1,52 +1,96 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { SignJWT } from "jose";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
-const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
+type BasicUser = { id: string; email: string; name?: string | null };
 
-export default NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-      // scope defaults include email+profile; no changes needed
-    }),
-  ],
-  session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 30 }, // 30 days
-  callbacks: {
-    async jwt({ token, account, profile }) {
-      // On first sign-in, add a few fields from Google
-      if (account && profile) {
-        token.email = (profile as any).email ?? token.email;
-        token.name = (profile as any).name ?? token.name;
-        token.picture = (profile as any).picture ?? token.picture;
-        token.sub = token.sub ?? (profile as any).sub; // Google user id
+async function tryJson(res: Response) {
+  try { return await res.json(); } catch { return null; }
+}
+
+async function loginAgainstBackend(base: string, email: string, password: string): Promise<BasicUser | null> {
+  // 1) Preferred: custom /api/login/ accepting either {email,password} or {username,password}
+  const candidates = [
+    { url: `${base}/api/login/`, body: { email, password } },
+    { url: `${base}/api/login/`, body: { username: email, password } },
+  ];
+  for (const c of candidates) {
+    try {
+      const r = await fetch(c.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c.body) });
+      if (r.ok) {
+        const data = await tryJson(r);
+        // Accept common shapes: {id,email,name?} or {user:{...}}
+        const u = data?.user ?? data;
+        if (u?.email) return { id: String(u.id ?? email), email: String(u.email), name: u.name ?? null };
+      } else if (r.status === 401) {
+        return null; // invalid creds
+      } else if (r.status === 404 || r.status === 405) {
+        // endpoint missing/wrong verb → fall through to SimpleJWT
+        break;
       }
-      return token;
-    },
-    async session({ session, token }) {
-      // Expose minimal user info
-      if (session.user) {
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
-        (session.user as any).picture = token.picture as string;
-        (session.user as any).id = token.sub as string;
-      }
-      // Mint a short-lived **app token** (HS256) for Django to verify
-      const appToken = await new SignJWT({
-        sub: token.sub,
-        email: token.email,
-        name: token.name,
-      })
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuer("nextauth")
-        .setAudience("django")
-        .setExpirationTime("8h")
-        .sign(secret);
+    } catch { /* keep falling through */ }
+  }
 
-      (session as any).appToken = appToken;
-      return session;
-    },
-  },
+  // 2) Fallback: djangorestframework-simplejwt at /api/token/
+  // It usually expects {username,password} and returns {access,refresh}
+  try {
+    const r = await fetch(`${base}/api/token/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, password }),
+    });
+    if (r.ok) {
+      // If we don’t have a /me endpoint, synthesize a user from the email.
+      // (We rely on NextAuth’s own HS256 JWT for protected API calls.)
+      return { id: email, email, name: null };
+    }
+    if (r.status === 401) return null;
+  } catch { /* ignore */ }
+
+  return null;
+}
+
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-});
+  session: { strategy: "jwt" },
+  providers: [
+    CredentialsProvider({
+      name: "Email & Password",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const base = process.env.NEXT_PUBLIC_API_BASE;
+        if (!base) throw new Error("NEXT_PUBLIC_API_BASE is not set");
+        const user = await loginAgainstBackend(base, credentials.email, credentials.password);
+        return user; // null → NextAuth returns 401
+       },
+     }),
+   ],
+   callbacks: {
+     async jwt({ token, user }) {
+       // First login: attach basic profile
+       if (user) {
+         token.user = user;
+         token.sub = (user as any).id ?? token.sub;
+       }
+       // Make token acceptable to Django validator (HS256 + audience/issuer)
+       (token as any).aud = "django";
+       (token as any).iss = "nextauth";
+       return token;
+     },
+     async session({ session, token }) {
+       session.user = (token as any).user || null;
+       (session as any).aud = (token as any).aud;
+       (session as any).iss = (token as any).iss;
+       return session;
+     },
+   },
+   pages: {
+     signIn: "/login",
+   },
+ };
+ 
+ export default NextAuth(authOptions);
