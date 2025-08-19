@@ -2,7 +2,6 @@ import Image from "next/image";
 import React from "react";
 
 type FeatureRowProps = {
-  eyebrow: string;
   title: string;
   copy: string;
   bullets?: string[];
@@ -16,7 +15,6 @@ type FeatureRowProps = {
 };
 
 export default function FeatureRow({
-  eyebrow,
   title,
   copy,
   bullets = [],
@@ -24,26 +22,24 @@ export default function FeatureRow({
   imageAlt,
   imageLeft,
   priority = false,
-  imageContain = false,
 }: FeatureRowProps) {
   const Img = (
-    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-white-100 shadow-lg sm:aspect-[4/3] lg:aspect-[3/2]">
+    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl sm:aspect-[4/3] lg:aspect-[3/2]">
       <Image
         src={imageSrc}
         alt={imageAlt}
         fill
-        className={imageContain ? "object-contain" : "object-cover"}
+        className="object-cover object-center"
         priority={priority}
         sizes="(min-width: 1024px) 50vw, 100vw"
+        draggable={false}
       />
     </div>
+
   );
 
   const Text = (
     <div className="flex flex-col justify-center">
-      <p className="text-sm font-semibold uppercase tracking-wider text-slate-500">
-        {eyebrow}
-      </p>
       <h3 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{title}</h3>
       <p className="mt-3 text-slate-600">{copy}</p>
       <ul className="mt-4 space-y-2 text-slate-700">

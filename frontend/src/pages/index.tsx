@@ -20,7 +20,7 @@ export default function HomePage() {
       </Head>
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
+      {/* <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
             <div>
@@ -51,6 +51,49 @@ export default function HomePage() {
             <div className="hidden lg:block">
               <div className="relative h-[420px] w-full overflow-hidden rounded-3xl border bg-white shadow-lg">
                 <Image src="/images/hosting.jpg" alt="Hosting control panel & performance illustration" fill className="object-cover" priority sizes="(min-width: 1024px) 560px, 100vw" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> */}
+      {/* HERO — NameHero-style with background image (fluid 1792:728) */}
+      <section className="relative overflow-hidden bg-white">
+        <div className="mx-auto w-full max-w-[1920px]">
+          {/* Aspect-ratio wrapper */}
+          <div className="relative aspect-[1792/728] min-h-[520px] sm:min-h-[560px] lg:min-h-[620px]">
+            {/* background image */}
+            <div className="absolute inset-0">
+              <img
+                src="/images/hero-section.jpg"
+                alt=""
+                className="h-full w-full object-cover object-center"
+              />
+            </div>
+
+            {/* content */}
+            <div className="absolute inset-0">
+              <div className="mx-auto flex h-full max-w-5xl flex-col items-center justify-center text-center">
+                <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                  Summer Savings Event: Up to 75% Off!
+                </div>
+                <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#2F1C6A] sm:text-5xl">
+                  Fast Hosting &amp; Domains Made Easy
+                </h1>
+                <p className="mx-auto mt-3 max-w-2xl text-base/7 text-[#2F1C6A]">
+                  Blazing fast NVMe + LiteSpeed, free &amp; auto SSL, and 24/7/365 SuperHero support.
+                </p>
+                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <a
+                    href="/hosting"
+                    className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  >
+                    Get Started Now
+                  </a>
+                </div>
+                <p className="mt-6 text-sm text-slate-500">
+                  Proudly trusted by over <span className="font-semibold text-slate-700">40,000+</span> customers and{" "}
+                  <span className="font-semibold text-slate-700">750,000+</span> websites.
+                </p>
               </div>
             </div>
           </div>

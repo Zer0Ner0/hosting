@@ -11,7 +11,6 @@ export default function FaqSection() {
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto px-4 max-w-2xl">
-        <h2 className="text-3xl font-bold text-center mb-10">Soalan Lazim (FAQ)</h2>
         <div className="space-y-4">
           {faqList.map((item, i) => (
             <div key={i} className="border border-gray-200 rounded-md overflow-hidden">

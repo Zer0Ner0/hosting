@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, ReactNode } from "react";
 import Link from "next/link";
 import Tooltip from "@/components/ui/Tooltip";
-import type { Plan as HostingPlan } from "@/types/Plan";
+import type { BackendPlanRaw as HostingPlan } from "@/types/Plan";
 
 type Category = "web" | "wordpress" | "woocommerce" | "email";
 

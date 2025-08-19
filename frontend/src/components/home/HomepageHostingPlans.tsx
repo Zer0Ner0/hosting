@@ -2,34 +2,21 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Plan } from '@/types/Plan'
+import type { BackendPlanRaw, PricingPlan } from '@/types/Plan'
 import EnhancedResponsivePricingCards from '../hosting/EnhancedResponsivePricingCards'
-
-// Backend shape (relaxed): features may be string[], string, or null
-type ApiPlan = {
-  id: number | string;
-  name: string;
-  price: number;
-  billing_cycle?: 'monthly' | 'yearly' | string | null;
-  isPopular?: boolean;
-  is_popular?: boolean;
-  features?: string[] | string | null;
-};
-
 
 export default function HomepageHostingPlans() {
   const router = useRouter()
-  const [plans, setPlans] = useState<ApiPlan[]>([])
+  const [plans, setPlans] = useState<BackendPlanRaw[]>([])
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const base = (process.env.NEXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
-        const res = await fetch(`${base}/api/plans/?category=web`)
-        const data: ApiPlan[] = await res.json()
-        setPlans(data)
+        const res = await fetch('http://localhost:8000/api/plans/?category=web')
+        const data = await res.json()
+        setPlans(data as BackendPlanRaw[])
       } catch (err) {
         console.error('Failed to fetch plans:', err)
       } finally {
@@ -40,25 +27,21 @@ export default function HomepageHostingPlans() {
   }, [])
 
   const filteredPlans = useMemo(
-    () => plans.filter((p) => !p.billing_cycle || p.billing_cycle === billingCycle),
+    () => plans.filter((p) => p.billing_cycle === billingCycle),
     [plans, billingCycle]
   )
 
-  const splitFeatures = (f: ApiPlan['features']): string[] => {
-    if (Array.isArray(f)) return f.filter(Boolean).map(s => String(s).trim())
-    if (typeof f === 'string') return f.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean)
-    return []
-  }
-
-  // Map backend Plan -> EnhancedResponsivePricingCards.PricingPlan
-  const mapped: Plan[] = useMemo(() => {
-    const toPricingPlan = (p: ApiPlan): Plan => {
-      const price = Number(p.price) || 0
+  // Map BackendPlan -> PricingPlan (UI)
+  const mapped: PricingPlan[] = useMemo(() => {
+    const toPricingPlan = (p: BackendPlanRaw): PricingPlan => {
+      const raw = (p.price ?? p.originalPrice ?? 0) as number | string
+      const priceNum = typeof raw === 'string' ? parseFloat(raw) : Number(raw)
+      const price = Number.isFinite(priceNum) ? priceNum : 0
       const original = (price * 1.5).toFixed(2)
       const renewal = (price * 1.2).toFixed(2)
       const savePct = Math.max(0, Math.round((1 - price / parseFloat(original)) * 100))
       return {
-        id: String(p.id ?? ''),
+        id: String(p.id),
         name: p.name,
         description: `Perfect for ${p.name.toLowerCase()} websites.`,
         originalPrice: original,
@@ -69,9 +52,9 @@ export default function HomepageHostingPlans() {
             ? 'For 12-month term'
             : 'For monthly term',
         renewalPrice: renewal,
-        features: splitFeatures(p.features).map(text => ({ text, included: true })),
-        isPopular: Boolean(p.isPopular ?? p.is_popular),
-        buttonVariant: (p.isPopular ?? p.is_popular) ? 'filled' : 'outline',
+        features: (p.feature_list || []).map(text => ({ text, included: true })), // ← use feature_list
+        isPopular: !!p.is_popular,
+        buttonVariant: p.is_popular ? 'filled' : 'outline',
         buttonText: 'Get Started',
         onSelectPlan: () => router.push(`/login?plan_id=${p.id}`),
       }
