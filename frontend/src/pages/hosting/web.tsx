@@ -42,7 +42,7 @@ export default function WebHostingPage() {
         />
       </Head>
 
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white">
         <div className="mx-auto max-w-7xl px-4 pb-8 pt-16 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
@@ -67,18 +67,18 @@ export default function WebHostingPage() {
       <BenefitsStrip items={benefits} />
 
       <section aria-label="Popular plans" className="bg-white">
-              <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
-                <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#2F1C6A] font-['DM_Sans']">
-                  Everything you need to succeed online
-                </h2>
-                <p className="mx-auto mt-2 max-w-2xl text-center text-[#727586] font-['DM_Sans']">
-                  Choose a plan and scale when you grow.
-                </p>
-                <div className="mt-8">
-                  <HomepageHostingPlans />
-                </div>
-              </div>
-            </section>
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#2F1C6A] font-['DM_Sans']">
+            Everything you need to succeed online
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-[#727586] font-['DM_Sans']">
+            Choose a plan and scale when you grow.
+          </p>
+          <div className="mt-8">
+            <HomepageHostingPlans />
+          </div>
+        </div>
+      </section>
 
       <FAQ items={faqs} heading="Web Hosting FAQs" subheading="Quick answers to common questions." />
     </>

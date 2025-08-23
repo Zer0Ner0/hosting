@@ -45,7 +45,7 @@ export default function FeatureRow({
       <ul className="mt-4 space-y-2 text-slate-700">
         {bullets.map((b) => (
           <li key={b} className="flex items-start gap-2">
-            <span className="mt-1 inline-block h-2 w-2 rounded-full bg-emerald-500" aria-hidden />
+            <span className="mt-1 inline-block h-2 w-2 rounded-full bg-blue-700" aria-hidden />
             <span>{b}</span>
           </li>
         ))}

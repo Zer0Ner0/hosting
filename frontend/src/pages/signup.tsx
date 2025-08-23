@@ -21,17 +21,17 @@ export default function SignUpPage() {
   });
 
   const router = useRouter();
-  
+
   const onSubmit = async (values: SignupFormValues) => {
-  setServerMessage(null);
-  try {
-    await registerAccount(values);
-    setServerMessage({ type: "ok", text: "Account created! Redirecting to login..." });
-    setTimeout(() => router.push("/login"), 900);
-  } catch (e: any) {
-    setServerMessage({ type: "error", text: e?.message || "Something went wrong" });
-  }
-};
+    setServerMessage(null);
+    try {
+      await registerAccount(values);
+      setServerMessage({ type: "ok", text: "Account created! Redirecting to login..." });
+      setTimeout(() => router.push("/login"), 900);
+    } catch (e: any) {
+      setServerMessage({ type: "error", text: e?.message || "Something went wrong" });
+    }
+  };
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function SignUpPage() {
             <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
             <div className="text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="font-medium text-emerald-600 hover:underline">
+              <Link href="/login" className="font-medium text-blue-800 hover:underline">
                 Log in
               </Link>
             </div>
@@ -71,8 +71,8 @@ export default function SignUpPage() {
           {serverMessage && (
             <div
               className={`mb-6 rounded-lg border px-4 py-3 text-sm ${serverMessage.type === "ok"
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                  : "border-rose-200 bg-rose-50 text-rose-700"
+                ? "border-blue-300 bg-blue-50 text-blue-900"
+                : "border-rose-200 bg-rose-50 text-rose-700"
                 }`}
             >
               {serverMessage.text}
@@ -195,7 +195,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60"
+                className="rounded-xl bg-blue-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-900 disabled:opacity-60"
               >
                 {isSubmitting ? "Creating..." : "Create Account"}
               </button>
@@ -206,7 +206,7 @@ export default function SignUpPage() {
 
       <style jsx global>{`
         .label { @apply block text-sm font-medium text-gray-700 mb-1; }
-        .input { @apply w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500; }
+        .input { @apply w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600; }
         .error { @apply mt-1 text-xs text-rose-600; }
       `}</style>
     </>

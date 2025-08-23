@@ -42,7 +42,7 @@ export default function WordPressHostingPage() {
         />
       </Head>
 
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white">
         <div className="mx-auto max-w-7xl px-4 pb-8 pt-16 sm:px-6 lg:px-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>

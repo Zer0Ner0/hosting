@@ -139,7 +139,7 @@ export default function DomainSearchBox() {
                         Score {Math.round(s.score)}{s.premium ? " · Premium" : ""}
                       </div>
                     </div>
-                    <span className={`text-xs ${s.available ? "text-emerald-600" : "text-rose-600"}`}>
+                    <span className={`text-xs ${s.available ? "text-blue-800" : "text-rose-600"}`}>
                       {s.available ? "Available" : "Taken"}
                     </span>
                   </div>
@@ -156,7 +156,7 @@ export default function DomainSearchBox() {
                       type="button"
                       onClick={() => addDomainToCart(s)}
                       disabled={!s.available}
-                      className={`rounded-md px-3 py-2 text-sm ${s.available ? "bg-emerald-600 text-white hover:bg-emerald-500" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`}
+                      className={`rounded-md px-3 py-2 text-sm ${s.available ? "bg-blue-800 text-white hover:bg-blue-700" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`}
                       aria-disabled={!s.available}
                     >
                       {s.available ? "Add to cart" : "Unavailable"}

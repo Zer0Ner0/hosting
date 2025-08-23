@@ -39,7 +39,7 @@ export default function BenefitsStrip({ items, heading, subheading }: Props) {
             key={idx}
             className="flex items-start gap-3 rounded-2xl border bg-white/80 p-4 shadow-sm"
           >
-            <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white">
+            <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-800 text-white">
               {it.icon ?? <DefaultIcon />}
             </span>
             <div>

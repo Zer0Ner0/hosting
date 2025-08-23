@@ -164,7 +164,7 @@ export default function PlansCompareMatrix({
                 onClick={() => setBilling(b)}
                 className={[
                   "rounded-full px-4 py-2 text-sm font-medium transition",
-                  billing === b ? "bg-emerald-600 text-white shadow" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50",
+                  billing === b ? "bg-blue-800 text-white shadow" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50",
                 ].join(" ")}
                 aria-pressed={billing === b}
               >
@@ -223,7 +223,7 @@ export default function PlansCompareMatrix({
                             <button
                               type="button"
                               aria-label={`About ${label}`}
-                              className="inline-flex h-5 w-5 items-center justify-center rounded-full border text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                              className="inline-flex h-5 w-5 items-center justify-center rounded-full border text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-800"
                             >
                               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" aria-hidden="true">
                                 <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1" />
@@ -240,11 +240,11 @@ export default function PlansCompareMatrix({
                         <td key={i} className="px-4 py-3 text-center border-b">
                           {included ? (
                             value ? (
-                              <span className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-emerald-600/30">
+                              <span className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-blue-800/30">
                                 {value}
                               </span>
                             ) : (
-                              <span aria-label="Included" title="Included" className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-white">
+                              <span aria-label="Included" title="Included" className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-800 text-white">
                                 <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                                   <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor" />
                                 </svg>

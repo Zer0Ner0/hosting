@@ -47,7 +47,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
-      <div className="bg-emerald-600 text-white">
+      <div className="bg-blue-800 text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-sm">
           <div className="flex items-center gap-4">
             <a href="tel:+60123456789" className="hover:underline">📞 Sales: +60 12-345 6789</a>
@@ -66,7 +66,7 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center font-semibold text-gray-900">
               {/* Replace with your logo <Image .../> when ready */}
-              <span className="text-emerald-700">Host</span>Pro
+              <span className="text-blue-900">Host</span>Pro
             </Link>
 
             {/* Desktop nav */}
@@ -79,7 +79,7 @@ export default function Navbar() {
                   aria-controls="hosting-mega"
                   className={[
                     "rounded-lg px-3 py-2 text-sm font-medium",
-                    hostingOpen ? "bg-emerald-50 text-emerald-700" : "text-gray-700 hover:bg-gray-50",
+                    hostingOpen ? "bg-blue-50 text-blue-900" : "text-gray-700 hover:bg-gray-50",
                   ].join(" ")}
                   onMouseEnter={openHosting}
                   onMouseLeave={scheduleCloseHosting}
@@ -115,7 +115,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="hidden rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 md:inline-block"
+                className="hidden rounded-full bg-blue-800 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-900 md:inline-block"
               >
                 Login
               </Link>
@@ -163,7 +163,7 @@ export default function Navbar() {
                   <li key={it.label}>
                     <Link
                       href={it.href}
-                      className="block rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-emerald-50"
+                      className="block rounded-md px-2 py-2 text-sm text-gray-700 hover:bg-blue-50"
                       onClick={() => setMobileOpen(false)}
                     >
                       {it.label}
@@ -204,7 +204,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-blue-800 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-900"
                 onClick={() => setMobileOpen(false)}
               >
                 Login

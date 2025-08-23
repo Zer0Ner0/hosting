@@ -17,7 +17,7 @@ export default function HighlightsStrip() {
               key={i.title}
               className="rounded-2xl border bg-white p-5 shadow-sm"
             >
-              <p className="text-sm font-semibold text-emerald-600">{i.title}</p>
+              <p className="text-sm font-semibold text-blue-800">{i.title}</p>
               <p className="mt-1 text-sm text-slate-600">{i.desc}</p>
             </div>
           ))}

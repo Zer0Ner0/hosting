@@ -60,10 +60,10 @@ export default function MegaMenu({ isOpen, onClose, anchorId, items, onMouseEnte
               <Link
                 key={it.label}
                 href={it.href}
-                className="group rounded-xl p-4 transition hover:bg-emerald-50 focus:bg-emerald-50 outline-none"
+                className="group rounded-xl p-4 transition hover:bg-blue-50 focus:bg-blue-50 outline-none"
                 onClick={onClose}
               >
-                <div className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700">
+                <div className="text-sm font-semibold text-gray-900 group-hover:text-blue-900">
                   {it.label}
                 </div>
                 {it.description ? (

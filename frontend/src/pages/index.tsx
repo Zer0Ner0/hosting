@@ -20,11 +20,11 @@ export default function HomePage() {
       </Head>
 
       {/* HERO */}
-      {/* <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-white">
+      {/* <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white">
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">
+              <p className="text-sm font-semibold uppercase tracking-wider text-blue-900">
                 High-Speed Cloud Hosting
               </p>
               <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
@@ -64,7 +64,7 @@ export default function HomePage() {
             {/* background image */}
             <div className="absolute inset-0">
               <img
-                src="/images/hero-section.jpg"
+                src="/images/hero-section.svg"
                 alt=""
                 className="h-full w-full object-cover object-center"
               />
@@ -73,26 +73,26 @@ export default function HomePage() {
             {/* content */}
             <div className="absolute inset-0">
               <div className="mx-auto flex h-full max-w-5xl flex-col items-center justify-center text-center">
-                <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                <div className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium text-white">
                   Summer Savings Event: Up to 75% Off!
                 </div>
-                <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#2F1C6A] sm:text-5xl">
+                <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
                   Fast Hosting &amp; Domains Made Easy
                 </h1>
-                <p className="mx-auto mt-3 max-w-2xl text-base/7 text-[#2F1C6A]">
+                <p className="mx-auto mt-3 max-w-2xl text-base/7 text-white/90">
                   Blazing fast NVMe + LiteSpeed, free &amp; auto SSL, and 24/7/365 SuperHero support.
                 </p>
                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <a
                     href="/hosting"
-                    className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    className="inline-flex items-center justify-center rounded-lg bg-blue-800 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-0"
                   >
                     Get Started Now
                   </a>
                 </div>
-                <p className="mt-6 text-sm text-slate-500">
-                  Proudly trusted by over <span className="font-semibold text-slate-700">40,000+</span> customers and{" "}
-                  <span className="font-semibold text-slate-700">750,000+</span> websites.
+                <p className="mt-6 text-sm text-white/80">
+                  Proudly trusted by over <span className="font-semibold text-white">40,000+</span> customers and{" "}
+                  <span className="font-semibold text-white">750,000+</span> websites.
                 </p>
               </div>
             </div>
@@ -120,22 +120,35 @@ export default function HomePage() {
 
       {/* FEATURE ROWS (mirror NH’s alternating blocks) */}
       <FeatureRow
-        eyebrow="Performance"
-        title="Launch faster on NVMe + LiteSpeed"
-        copy="NVMe storage, HTTP/3, and server-level caching tuned for WordPress and custom apps."
-        bullets={["NVMe SSD", "LiteSpeed + QUIC", "Global CDN-ready"]}
-        imageSrc="/images/features/performance.jpg"
-        imageAlt="Performance stack illustration"
+        title="Instant Website Setup"
+        copy="No tech skills needed—launch on our high-speed cloud in minutes. Manage content, email, and domains easily, and build secure online stores with free SSL that rank higher in search results."
+        imageSrc="/images/features/instant-setup.svg"
+        imageAlt="Instant website setup illustration"
         imageLeft
         imageContain // it's an SVG
       />
 
       <FeatureRow
-        eyebrow="Security"
-        title="Always-on protection"
-        copy="Imunify360 malware defense, Web Application Firewall, and free SSL across all plans."
-        bullets={["Imunify360", "WAF", "Auto SSL"]}
-        imageSrc="/images/features/security.jpg"
+        title="20x Faster Performance"
+        copy="Slow sites lose visitors and rankings. We deliver blazing-fast load times so your website stays competitive."
+        imageSrc="/images/features/faster-performance.svg"
+        imageAlt="Performance stack illustration"
+        imageContain
+      />
+
+      <FeatureRow
+        title="99.9% Uptime Guaranteed"
+        copy="Downtime costs sales and trust. Since 2015, we’ve ensured near-perfect uptime for every site—big or small—at a price that fits your budget."
+        imageSrc="/images/features/uptime.svg"
+        imageAlt="Uptime guarantee illustration"
+        imageLeft
+        imageContain // it's an SVG
+      />
+
+      <FeatureRow
+        title="Tailored Website Security"
+        copy="Security isn’t one-size-fits-all. Our Security Shield uses machine learning to block threats before they strike—complete with real-time malware scans and automatic patching to keep your site safe."
+        imageSrc="/images/features/security.svg"
         imageAlt="Security shield with monitoring"
         imageContain
       />

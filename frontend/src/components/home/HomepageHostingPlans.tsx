@@ -72,8 +72,8 @@ export default function HomepageHostingPlans() {
               onClick={() => setBillingCycle('monthly')}
               className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
                 billingCycle === 'monthly'
-                  ? 'bg-[#673DE6] text-white'
-                  : 'text-[#2F1C6A] hover:bg-[#F2F4FF]'
+                  ? 'bg-blue-800 text-white'
+                  : 'text-black hover:bg-[#F2F4FF]'
               }`}
             >
               Monthly
@@ -82,8 +82,8 @@ export default function HomepageHostingPlans() {
               onClick={() => setBillingCycle('yearly')}
               className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
                 billingCycle === 'yearly'
-                  ? 'bg-[#673DE6] text-white'
-                  : 'text-[#2F1C6A] hover:bg-[#F2F4FF]'
+                  ? 'bg-blue-800 text-white'
+                  : 'text-black hover:bg-[#F2F4FF]'
               }`}
             >
               Yearly

@@ -72,13 +72,13 @@ const PricingCard: React.FC<{
   return (
     <div className={`relative w-full h-full mx-auto ${className} text-center`}>
       {plan.isPopular && (
-        <div className="absolute -top-[43px] left-0 right-0 h-10 bg-[#8C85FF] border-2 border-[#8C85FF] rounded-t-2xl flex items-center justify-center z-10">
+        <div className="absolute -top-[43px] left-0 right-0 h-10 bg-blue-800 border-2 border-blue-800 rounded-t-2xl flex items-center justify-center z-10">
           <span className="text-white text-sm font-bold uppercase tracking-wide leading-[14px]">Most popular</span>
         </div>
       )}
 
       <div className={`relative h-full rounded-2xl border-2 flex flex-col ${plan.isPopular
-          ? 'border-[#8C85FF] bg-[#FAFBFF] rounded-t-none'
+          ? 'border-blue-800 bg-[#FAFBFF] rounded-t-none'
           : 'border-[#D5DFFF] bg-white'
         } p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-200`}>
 
@@ -97,7 +97,7 @@ const PricingCard: React.FC<{
           {/* Original Price and Save Badge */}
           <div className="flex justify-center items-center gap-2 mb-4 h-8 text-center">
             <div className="flex items-center text-sm">
-              <span className="text-[#727586] line-through font-['DM_Sans']">$</span>
+              <span className="text-[#727586] line-through font-['DM_Sans']">RM</span>
               <span className="text-[#727586] line-through font-['DM_Sans']">{plan.originalPrice}</span>
             </div>
             <div className="bg-[#D5DFFF] rounded-full px-2 py-1">
@@ -153,9 +153,9 @@ const PricingCard: React.FC<{
         <div className="mb-8">
           <button
             onClick={handleSelectPlan}
-            className={`w-full h-12 rounded-lg border-2 border-[#673DE6] font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
-                ? 'bg-[#673DE6] text-white hover:bg-[#5a2fc4] hover:border-[#5a2fc4]'
-                : 'bg-transparent text-[#673DE6] hover:bg-[#673DE6] hover:text-white'
+            className={`w-full h-12 rounded-lg border-2 border-blue-800 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
+                ? 'bg-blue-800 text-white hover:bg-blue-700 hover:border-blue-700'
+                : 'bg-transparent text-blue-800 hover:bg-blue-800 hover:text-white'
               }`}>
             {plan.buttonText || 'Choose plan'}
           </button>
@@ -179,7 +179,7 @@ const EnhancedResponsivePricingCards: React.FC<EnhancedResponsivePricingCardsPro
         {(title || subtitle) && (
           <div className="text-center mb-12">
             {title && (
-              <h2 className="text-3xl lg:text-4xl font-bold text-[#2F1C6A] mb-4 font-['DM_Sans']">
+              <h2 className="text-3xl lg:text-4xl font-bold text-black mb-4 font-['DM_Sans']">
                 {title}
               </h2>
             )}
