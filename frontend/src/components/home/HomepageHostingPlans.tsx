@@ -76,11 +76,10 @@ export default function HomepageHostingPlans() {
               <button
                 key={c.key}
                 onClick={() => setCategory(c.key)}
-                className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-                  category === c.key
-                    ? 'bg-blue-800 text-white'
-                    : 'text-black hover:bg-[#F2F4FF]'
-                }`}
+                className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${category === c.key
+                  ? 'bg-blue-800 text-white'
+                  : 'text-black hover:bg-[#F2F4FF]'
+                  }`}
               >
                 {c.label}
               </button>
@@ -93,11 +92,7 @@ export default function HomepageHostingPlans() {
         ) : (
           <EnhancedResponsivePricingCards
             plans={mapped}
-            title={
-              categories.find((c) => c.key === category)?.label + ' Plans'
-            }
-            subtitle="Choose the perfect plan and scale as you grow"
-            showFeatureLimit={15} 
+            showFeatureLimit={15}
           />
         )}
       </div>

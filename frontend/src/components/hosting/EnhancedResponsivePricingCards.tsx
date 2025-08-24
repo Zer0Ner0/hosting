@@ -72,14 +72,14 @@ const PricingCard: React.FC<{
   return (
     <div className={`relative w-full h-full mx-auto ${className} text-center`}>
       {plan.isPopular && (
-        <div className="absolute -top-[43px] left-0 right-0 h-10 bg-blue-800 border-2 border-blue-800 rounded-t-2xl flex items-center justify-center z-10">
+        <div className="absolute -top-[43px] left-0 right-0 h-10 bg-orange-500 border-2 border-orange-500 rounded-t-2xl flex items-center justify-center z-10">
           <span className="text-white text-sm font-bold uppercase tracking-wide leading-[14px]">Most popular</span>
         </div>
       )}
 
       <div className={`relative h-full rounded-2xl border-2 flex flex-col ${plan.isPopular
-          ? 'border-blue-800 bg-[#FAFBFF] rounded-t-none'
-          : 'border-[#D5DFFF] bg-white'
+        ? 'border-orange-500 bg-[#FAFBFF] rounded-t-none'
+        : 'border-[#D5DFFF] bg-white'
         } p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-200 text-center`}>
 
         {/* Plan Name */}
@@ -154,8 +154,8 @@ const PricingCard: React.FC<{
           <button
             onClick={handleSelectPlan}
             className={`w-full h-12 rounded-lg border-2 border-blue-800 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
-                ? 'bg-blue-800 text-white hover:bg-blue-700 hover:border-blue-700'
-                : 'bg-transparent text-blue-800 hover:bg-blue-800 hover:text-white'
+              ? 'bg-blue-800 text-white hover:bg-blue-700 hover:border-blue-700'
+              : 'bg-transparent text-blue-800 hover:bg-blue-800 hover:text-white'
               }`}>
             {plan.buttonText || 'Choose plan'}
           </button>

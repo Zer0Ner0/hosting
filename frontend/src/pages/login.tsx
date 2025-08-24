@@ -97,7 +97,7 @@ export default function Login({ callbackUrl, error: errorParam }: Props) {
       <Head>
         <title>Sign in</title>
       </Head>
-      <main className="min-h-screen bg-slate-50">
+      <main className="min-h-screen bg-blue-50">
 
         {/* Content */}
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 md:py-16">

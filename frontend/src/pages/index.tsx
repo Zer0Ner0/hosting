@@ -85,7 +85,7 @@ export default function HomePage() {
                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <a
                     href="/hosting"
-                    className="inline-flex items-center justify-center rounded-lg bg-blue-800 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-0"
+                    className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-0"
                   >
                     Get Started Now
                   </a>
@@ -99,8 +99,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <TrustBar />
       <HighlightsStrip />
 
       {/* PLANS TEASER (pulls from /api/plans) */}
@@ -114,7 +112,18 @@ export default function HomePage() {
           </p>
           <div className="mt-8">
             <HomepageHostingPlans />
+            <TrustBar />
           </div>
+        </div>
+      </section>
+
+      {/* Domain Search Box*/}
+      <section className="bg-blue-900">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl sm:text-4xl font-bold text-white font-['DM_Sans']">
+            Your Online Journey Starts With A Perfect Domain
+          </h2>
+          <DomainSearchBox />
         </div>
       </section>
 
@@ -154,7 +163,7 @@ export default function HomePage() {
       />
 
       {/* SOCIAL PROOF */}
-      <section className="bg-slate-50">
+      <section className="bg-blue-900">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <Testimonials />
         </div>

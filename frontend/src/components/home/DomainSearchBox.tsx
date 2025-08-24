@@ -82,20 +82,20 @@ export default function DomainSearchBox() {
   }
 
   return (
-    <section className="bg-white py-10">
+    <section className="bg-blue-900 py-10">
       <div className="container w-full max-w-4xl">
         {/* Search */}
         <form onSubmit={onSearch} className="flex gap-2">
           <input
             type="text"
-            placeholder="Search domain (e.g. amirmz.com or just 'amirmz')"
+            placeholder="Find your new domain name"
             className="w-full rounded-xl border px-4 py-3"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <button
             type="submit"
-            className="rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 disabled:opacity-50"
+            className="rounded-xl bg-orange-500 px-5 py-3 text-white hover:bg-orange-600 disabled:opacity-50"
             disabled={loading}
           >
             {loading ? "Searching..." : "Search"}

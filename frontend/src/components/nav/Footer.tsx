@@ -4,9 +4,9 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-950 text-slate-300">
+    <footer className="bg-blue-950 text-slate-300">
       {/* CTA band */}
-      <div className="border-b border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950">
+      <div className="bg-gradient-to-b from-blue-800 to-blue-950">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-10 text-center sm:flex-row sm:text-left sm:px-6 lg:px-8">
           <div>
             <h2 className="text-2xl font-bold text-white">Ready to launch faster?</h2>

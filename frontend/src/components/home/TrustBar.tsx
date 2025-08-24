@@ -10,7 +10,7 @@ const BRANDS = [
 
 export default function TrustBar() {
   return (
-    <section className="border-y bg-white">
+    <section className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6">
         <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 opacity-80">
           {BRANDS.map(b => (
