@@ -80,16 +80,16 @@ const PricingCard: React.FC<{
       <div className={`relative h-full rounded-2xl border-2 flex flex-col ${plan.isPopular
           ? 'border-blue-800 bg-[#FAFBFF] rounded-t-none'
           : 'border-[#D5DFFF] bg-white'
-        } p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-200`}>
+        } p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow duration-200 text-center`}>
 
         {/* Plan Name */}
         <div className="mb-2">
-          <h3 className="text-xl font-bold text-[#2F1C6A] leading-8 font-['DM_Sans']">{plan.name}</h3>
+          <h3 className="text-xl font-bold text-[#000000] leading-8 font-['DM_Sans']">{plan.name}</h3>
         </div>
 
         {/* Description */}
         <div className="mb-6">
-          <p className="text-sm text-[#2F1C6A] leading-6 font-['DM_Sans']">{plan.description}</p>
+          <p className="text-sm text-[#000000] leading-6 font-['DM_Sans']">{plan.description}</p>
         </div>
 
         {/* Pricing Section */}
@@ -101,18 +101,18 @@ const PricingCard: React.FC<{
               <span className="text-[#727586] line-through font-['DM_Sans']">{plan.originalPrice}</span>
             </div>
             <div className="bg-[#D5DFFF] rounded-full px-2 py-1">
-              <span className="text-sm font-bold text-[#2F1C6A] font-['DM_Sans']">{plan.savePercentage}</span>
+              <span className="text-sm font-bold text-blue-900 font-['DM_Sans']">{plan.savePercentage}</span>
             </div>
           </div>
 
           {/* Current Price */}
           <div className="mb-6">
             <div className="flex items-baseline">
-              <span className="text-xl text-[#2F1C6A] leading-[34px] font-['DM_Sans']">RM</span>
-              <span className="text-4xl md:text-5xl font-bold text-[#2F1C6A] leading-tight font-['DM_Sans']">{plan.currentPrice}</span>
-              <span className="text-xl text-[#2F1C6A] leading-[34px] ml-1 font-['DM_Sans']">/m</span>
+              <span className="text-xl text-[#000000] leading-[34px] font-['DM_Sans']">RM</span>
+              <span className="text-4xl md:text-5xl font-bold text-[#000000] leading-tight font-['DM_Sans']">{plan.currentPrice}</span>
+              <span className="text-xl text-[#000000] leading-[34px] ml-1 font-['DM_Sans']">/mo</span>
             </div>
-            <p className="text-sm text-[#2F1C6A] opacity-80 leading-6 font-['DM_Sans'] mt-1">{plan.term}</p>
+            <p className="text-sm text-[#000000] opacity-80 leading-6 font-['DM_Sans'] mt-1">{plan.term}</p>
           </div>
 
           {/* Renewal Price */}
@@ -140,7 +140,7 @@ const PricingCard: React.FC<{
         {plan.features.length > showFeatureLimit && (
           <button
             onClick={() => setShowAllFeatures(!showAllFeatures)}
-            className="mt-auto flex items-center gap-2 text-[#673DE6] hover:text-[#5a2fc4] transition-colors duration-200 font-['DM_Sans']"
+            className="mt-auto flex items-center gap-2 text-[#000000] hover:text-blue-800 transition-colors duration-200 font-['DM_Sans']"
           >
             <span>{showAllFeatures ? 'Show less features' : 'See all features'}</span>
             <div className={`transform transition-transform duration-200 ${showAllFeatures ? 'rotate-180' : ''}`}>

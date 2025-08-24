@@ -8,28 +8,35 @@ import EnhancedResponsivePricingCards from '../hosting/EnhancedResponsivePricing
 export default function HomepageHostingPlans() {
   const router = useRouter()
   const [plans, setPlans] = useState<BackendPlanRaw[]>([])
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
+  // Category tabs
+  const categories = [
+    { key: 'web', label: 'Web Hosting' },
+    { key: 'wordpress', label: 'WordPress Hosting' },
+    { key: 'email', label: 'Email Hosting' },
+    { key: 'woocommerce', label: 'WooCommerce Hosting' },
+  ] as const
+  type CatKey = typeof categories[number]['key']
+  const [category, setCategory] = useState<CatKey>('web')
   const [loading, setLoading] = useState(true)
 
+  // Fetch whenever category changes
   useEffect(() => {
+    let isMounted = true
     const fetchPlans = async () => {
+      setLoading(true)
       try {
-        const res = await fetch('http://localhost:8000/api/plans/?category=web')
+        const res = await fetch(`http://localhost:8000/api/plans/?category=${category}`)
         const data = await res.json()
-        setPlans(data as BackendPlanRaw[])
+        if (isMounted) setPlans(data as BackendPlanRaw[])
       } catch (err) {
         console.error('Failed to fetch plans:', err)
       } finally {
-        setLoading(false)
+        if (isMounted) setLoading(false)
       }
     }
     fetchPlans()
-  }, [])
-
-  const filteredPlans = useMemo(
-    () => plans.filter((p) => p.billing_cycle === billingCycle),
-    [plans, billingCycle]
-  )
+    return () => { isMounted = false }
+  }, [category])
 
   // Map BackendPlan -> PricingPlan (UI)
   const mapped: PricingPlan[] = useMemo(() => {
@@ -47,10 +54,7 @@ export default function HomepageHostingPlans() {
         originalPrice: original,
         currentPrice: price.toFixed(2),
         savePercentage: `Save ${savePct}%`,
-        term:
-          p.billing_cycle === 'yearly'
-            ? 'For 12-month term'
-            : 'For monthly term',
+        term: p.billing_cycle === 'yearly' ? 'For 12-month term' : 'For monthly term',
         renewalPrice: renewal,
         features: (p.feature_list || []).map(text => ({ text, included: true })), // ← use feature_list
         isPopular: !!p.is_popular,
@@ -59,35 +63,28 @@ export default function HomepageHostingPlans() {
         onSelectPlan: () => router.push(`/login?plan_id=${p.id}`),
       }
     }
-    return filteredPlans.map(toPricingPlan)
-  }, [filteredPlans, router])
+    return plans.map(toPricingPlan)
+  }, [plans, router])
 
   return (
     <section className="bg-white py-8 lg:py-12 font-['DM_Sans']">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        {/* Billing toggle styled like the enhanced system */}
+        {/* Category Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex rounded-full border-2 border-[#D5DFFF] p-1 bg-white">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-                billingCycle === 'monthly'
-                  ? 'bg-blue-800 text-white'
-                  : 'text-black hover:bg-[#F2F4FF]'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-                billingCycle === 'yearly'
-                  ? 'bg-blue-800 text-white'
-                  : 'text-black hover:bg-[#F2F4FF]'
-              }`}
-            >
-              Yearly
-            </button>
+          <div className="inline-flex flex-wrap gap-2 rounded-full border-2 border-[#D5DFFF] p-1 bg-white">
+            {categories.map((c) => (
+              <button
+                key={c.key}
+                onClick={() => setCategory(c.key)}
+                className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+                  category === c.key
+                    ? 'bg-blue-800 text-white'
+                    : 'text-black hover:bg-[#F2F4FF]'
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -96,9 +93,11 @@ export default function HomepageHostingPlans() {
         ) : (
           <EnhancedResponsivePricingCards
             plans={mapped}
-            title="Popular Web Hosting Plans"
-            subtitle="Choose the perfect hosting plan for your website with our most popular options"
-            showFeatureLimit={15}
+            title={
+              categories.find((c) => c.key === category)?.label + ' Plans'
+            }
+            subtitle="Choose the perfect plan and scale as you grow"
+            showFeatureLimit={15} 
           />
         )}
       </div>

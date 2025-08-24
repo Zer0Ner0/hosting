@@ -106,7 +106,7 @@ export default function HomePage() {
       {/* PLANS TEASER (pulls from /api/plans) */}
       <section aria-label="Popular plans" className="bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
-          <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#2F1C6A] font-['DM_Sans']">
+          <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#000000] font-['DM_Sans']">
             Everything you need to succeed online
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-center text-[#727586] font-['DM_Sans']">
