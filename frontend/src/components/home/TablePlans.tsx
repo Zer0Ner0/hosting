@@ -1,11 +1,14 @@
-//frontend/src/components/home/HomepageHostingPlans.tsx
+//frontend/src/components/home/TablePlans.tsx
 'use client'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { BackendPlanRaw, PricingPlan } from '@/types/Plan'
 import EnhancedResponsivePricingCards from '../hosting/EnhancedResponsivePricingCards'
 
-export default function HomepageHostingPlans() {
+type FixedCat = 'web' | 'wordpress' | 'email' | 'woocommerce'
+type Props = { fixedCategory?: FixedCat }
+
+export default function TablePlans({ fixedCategory }: Props) {
   const router = useRouter()
   const [plans, setPlans] = useState<BackendPlanRaw[]>([])
   // Category tabs
@@ -25,7 +28,8 @@ export default function HomepageHostingPlans() {
     const fetchPlans = async () => {
       setLoading(true)
       try {
-        const res = await fetch(`http://localhost:8000/api/plans/?category=${category}`)
+        const effectiveCategory = (fixedCategory ?? category)
+        const res = await fetch(`http://localhost:8000/api/plans/?category=${effectiveCategory}`)
         const data = await res.json()
         if (isMounted) setPlans(data as BackendPlanRaw[])
       } catch (err) {
@@ -36,7 +40,7 @@ export default function HomepageHostingPlans() {
     }
     fetchPlans()
     return () => { isMounted = false }
-  }, [category])
+  }, [category, fixedCategory])
 
   // Map BackendPlan -> PricingPlan (UI)
   const mapped: PricingPlan[] = useMemo(() => {
@@ -69,23 +73,23 @@ export default function HomepageHostingPlans() {
   return (
     <section className="bg-white py-8 lg:py-12 font-['DM_Sans']">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        {/* Category Tabs */}
-        <div className="flex justify-center mb-8">
-          <div className="inline-flex flex-wrap gap-2 rounded-full border-2 border-[#D5DFFF] p-1 bg-white">
-            {categories.map((c) => (
-              <button
-                key={c.key}
-                onClick={() => setCategory(c.key)}
-                className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${category === c.key
-                  ? 'bg-blue-800 text-white'
-                  : 'text-black hover:bg-[#F2F4FF]'
-                  }`}
-              >
-                {c.label}
-              </button>
-            ))}
+        {/* Category Tabs (hidden if fixedCategory is provided) */}
+        {!fixedCategory && (
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex flex-wrap gap-2 rounded-full border-2 border-[#D5DFFF] p-1 bg-white">
+              {categories.map((c) => (
+                <button
+                  key={c.key}
+                  onClick={() => setCategory(c.key)}
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${category === c.key ? 'bg-blue-800 text-white' : 'text-black hover:bg-[#F2F4FF]'
+                    }`}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {loading ? (
           <p className="text-center text-[#727586]">Loading plans...</p>

@@ -27,7 +27,12 @@ type SuggestResp = {
 
 const DEFAULT_TLDS = ["com", "net", "org", "io", "co", "xyz", "online", "site", "store", "tech", "app", "blog", "shop", "info", "biz"];
 
-export default function DomainSearchBox() {
+type Props = {
+  /** Default = 'default' renders the blue band; 'hero' makes it transparent for dark hero headers */
+  variant?: "default" | "hero";
+};
+
+export default function DomainSearchBox({ variant = "default" }: Props) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [resp, setResp] = useState<SuggestResp | null>(null);
@@ -81,21 +86,28 @@ export default function DomainSearchBox() {
     }
   }
 
+  const isHero = variant === "hero";
   return (
-    <section className="bg-blue-900 py-10">
-      <div className="container w-full max-w-4xl">
+    <section className={isHero ? "py-0" : "bg-blue-900 py-10"}>
+      <div className={`w-full ${isHero ? "max-w-none" : "max-w-4xl"} mx-auto`}>
         {/* Search */}
         <form onSubmit={onSearch} className="flex gap-2">
           <input
             type="text"
             placeholder="Find your new domain name"
-            className="w-full rounded-xl border px-4 py-3"
+            className={`w-full rounded-xl border px-4 py-3 ${
+              isHero
+                ? "bg-white/95 text-black placeholder:text-gray-500"
+                : "bg-white"
+            }`}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <button
             type="submit"
-            className="rounded-xl bg-orange-500 px-5 py-3 text-white hover:bg-orange-600 disabled:opacity-50"
+            className={`rounded-xl px-5 py-3 text-white hover:opacity-90 disabled:opacity-50 ${
+              isHero ? "bg-emerald-600" : "bg-orange-500 hover:bg-orange-600"
+            }`}
             disabled={loading}
           >
             {loading ? "Searching..." : "Search"}
@@ -103,7 +115,7 @@ export default function DomainSearchBox() {
         </form>
 
         {/* TLD chips */}
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className={`mt-3 flex flex-wrap gap-2 ${isHero ? "justify-center" : ""}`}>
           {DEFAULT_TLDS.map((tld) => {
             const active = selectedTlds.includes(tld);
             return (
@@ -111,7 +123,11 @@ export default function DomainSearchBox() {
                 key={tld}
                 type="button"
                 onClick={() => toggleTld(tld)}
-                className={`rounded-full border px-3 py-1 text-sm ${active ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}
+                className={`rounded-full border px-3 py-1 text-sm ${
+                  active
+                    ? `${isHero ? "bg-white/10 border-white/30 text-white" : "bg-black text-white"}`
+                    : `${isHero ? "bg-white text-black" : "bg-white text-black hover:bg-gray-100"}`
+                }`}
               >
                 .{tld}
               </button>
@@ -125,7 +141,7 @@ export default function DomainSearchBox() {
         )}
 
         {resp && !("error" in resp) && (
-          <div className="mt-5">
+          <div className={`mt-5 ${isHero ? "bg-white/90 rounded-xl p-4" : ""}`}>
             <h3 className="mb-3 text-base font-semibold">
               Suggestions for “{resp.searchTerm}”
             </h3>

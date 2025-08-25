@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import DomainSearchBox from "@/components/home/DomainSearchBox";
-import HomepageHostingPlans from "@/components/home/HomepageHostingPlans";
+import TablePlans from "@/components/home/TablePlans";
 import FaqSection from "@/components/home/FaqSection";
 import Testimonials from "@/components/home/Testimonials";
 import TrustBar from "@/components/home/TrustBar";
@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Fast NVMe Web Hosting • YourBrand</title>
+        <title>Hosting My - Fast Web Hosting & Domains Made Easy</title>
         <meta
           name="description"
           content="Lightning-fast NVMe web hosting with LiteSpeed, free SSL, and 24/7 expert support."
@@ -111,7 +111,7 @@ export default function HomePage() {
             Choose a plan and scale when you grow.
           </p>
           <div className="mt-8">
-            <HomepageHostingPlans />
+            <TablePlans />
             <TrustBar />
           </div>
         </div>
