@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import HostingPlan, Checkout, Order, OrderItem, Payment, CustomerProfile
+from .models import HostingPlan, PlanSpec, Checkout, Order, OrderItem, Payment, CustomerProfile
 import re
 
 
@@ -88,6 +88,27 @@ class HostingPlanSerializer(serializers.ModelSerializer):
         # expects model to implement feature_list(self) -> list[str]
         return obj.feature_list()
 
+
+class PlanSpecSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanSpec
+        fields = ["label", "value", "icon", "order"]
+
+
+class HostingPlanWithSpecsSerializer(serializers.ModelSerializer):
+    specs = PlanSpecSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = HostingPlan
+        fields = [
+            "id",
+            "name",
+            "price",
+            "billing_cycle",
+            "category",
+            "is_popular",
+            "specs",
+        ]
 
 class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:

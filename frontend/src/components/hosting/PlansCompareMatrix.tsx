@@ -164,7 +164,7 @@ export default function PlansCompareMatrix({
                 onClick={() => setBilling(b)}
                 className={[
                   "rounded-full px-4 py-2 text-sm font-medium transition",
-                  billing === b ? "bg-blue-800 text-white shadow" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50",
+                  billing === b ? "bg-blue-900 text-white shadow" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50",
                 ].join(" ")}
                 aria-pressed={billing === b}
               >
@@ -244,7 +244,7 @@ export default function PlansCompareMatrix({
                                 {value}
                               </span>
                             ) : (
-                              <span aria-label="Included" title="Included" className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-800 text-white">
+                              <span aria-label="Included" title="Included" className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-900 text-white">
                                 <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                                   <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor" />
                                 </svg>

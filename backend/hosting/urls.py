@@ -6,6 +6,7 @@ urlpatterns = [
     # Plans & checkout
     path('plans/', views.get_hosting_plans, name='get_hosting_plans'),
     path('plans/<int:plan_id>/', views.get_hosting_plan_detail, name='get_hosting_plan_detail'),
+    path('plans/specs/', views.get_plan_specs, name='get_plan_specs'),
     path('checkout/', views.create_checkout, name='create_checkout'),
 
     # Stripe (optional / keep if you already use)

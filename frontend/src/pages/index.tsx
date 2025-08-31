@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import DomainSearchBox from "@/components/home/DomainSearchBox";
 import TablePlans from "@/components/home/TablePlans";
 import FaqSection from "@/components/home/FaqSection";

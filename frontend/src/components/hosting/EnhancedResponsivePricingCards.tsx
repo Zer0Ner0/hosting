@@ -95,33 +95,44 @@ const PricingCard: React.FC<{
         {/* Pricing Section */}
         <div className="mb-6">
           {/* Original Price and Save Badge */}
-          <div className="flex justify-center items-center gap-2 mb-4 h-8 text-center">
-            <div className="flex items-center text-sm">
-              <span className="text-[#727586] line-through font-['DM_Sans']">RM</span>
-              <span className="text-[#727586] line-through font-['DM_Sans']">{plan.originalPrice}</span>
+          <div className="flex justify-center items-center gap-2 mb-4 text-center">
+            {/* Strikethrough Price */}
+            <div className="flex items-center text-xs text-[#9CA3AF] line-through font-['DM_Sans']">
+              <span>RM</span>
+              <span>{plan.originalPrice}</span>
             </div>
-            <div className="bg-[#D5DFFF] rounded-full px-2 py-1">
-              <span className="text-sm font-bold text-blue-900 font-['DM_Sans']">{plan.savePercentage}</span>
+
+            {/* Save Badge */}
+            <div className="bg-[#D5DFFF] rounded-full px-2 py-0.5">
+              <span className="text-xs font-bold text-blue-900 font-['DM_Sans']">
+                {plan.savePercentage}
+              </span>
             </div>
           </div>
+
 
           {/* Current Price */}
-          <div className="mb-6">
-            <div className="flex items-baseline">
-              <span className="text-xl text-[#000000] leading-[34px] font-['DM_Sans']">RM</span>
-              <span className="text-4xl md:text-5xl font-bold text-[#000000] leading-tight font-['DM_Sans']">{plan.currentPrice}</span>
-              <span className="text-xl text-[#000000] leading-[34px] ml-1 font-['DM_Sans']">/mo</span>
+          <div className="mb-6 text-center">
+            <div className="flex items-end justify-center gap-1">
+              <span className="text-xl text-[#000000] leading-none font-['DM_Sans']">RM</span>
+              <span className="text-4xl md:text-5xl font-bold text-[#000000] leading-none font-['DM_Sans']">
+                {plan.currentPrice}
+              </span>
+              <span className="text-base md:text-lg text-[#000000] leading-none ml-1 font-['DM_Sans']">/mo</span>
             </div>
-            <p className="text-sm text-[#000000] opacity-80 leading-6 font-['DM_Sans'] mt-1">{plan.term}</p>
+            <p className="text-sm text-[#000000] opacity-80 font-['DM_Sans'] mt-2">
+              {plan.term}
+            </p>
           </div>
 
+
           {/* Renewal Price */}
-          <div className="mb-8">
-            <div className="flex items-center gap-1 text-sm text-[#727586] leading-6 font-['DM_Sans']">
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center gap-1 text-sm text-[#727586] leading-6 font-['DM_Sans']">
               <span>RM</span>
               <span>{plan.renewalPrice}</span>
               <span>/mo</span>
-              <span>when you renew</span>
+              <span className="text-xs text-[#9CA3AF]">when you renew</span>
             </div>
           </div>
         </div>
@@ -154,8 +165,8 @@ const PricingCard: React.FC<{
           <button
             onClick={handleSelectPlan}
             className={`w-full h-12 rounded-lg border-2 border-blue-800 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
-              ? 'bg-blue-800 text-white hover:bg-blue-700 hover:border-blue-700'
-              : 'bg-transparent text-blue-800 hover:bg-blue-800 hover:text-white'
+              ? 'bg-blue-900 text-white hover:bg-blue-700 hover:border-blue-700'
+              : 'bg-transparent text-blue-800 hover:bg-blue-900 hover:text-white'
               }`}>
             {plan.buttonText || 'Choose plan'}
           </button>

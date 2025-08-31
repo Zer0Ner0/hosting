@@ -195,7 +195,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-xl bg-blue-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-900 disabled:opacity-60"
+                className="rounded-xl bg-blue-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-900 disabled:opacity-60"
               >
                 {isSubmitting ? "Creating..." : "Create Account"}
               </button>

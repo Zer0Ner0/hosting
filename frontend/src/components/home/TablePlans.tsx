@@ -81,7 +81,7 @@ export default function TablePlans({ fixedCategory }: Props) {
                 <button
                   key={c.key}
                   onClick={() => setCategory(c.key)}
-                  className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${category === c.key ? 'bg-blue-800 text-white' : 'text-black hover:bg-[#F2F4FF]'
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${category === c.key ? 'bg-blue-900 text-white' : 'text-black hover:bg-[#F2F4FF]'
                     }`}
                 >
                   {c.label}

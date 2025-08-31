@@ -75,7 +75,7 @@ export default function CartPage() {
           </div>
           <div className="mt-6 flex justify-end">
             <button
-              className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900"
+              className="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-900"
               onClick={checkout}
             >
               Checkout

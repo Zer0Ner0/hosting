@@ -25,6 +25,31 @@ class HostingPlan(models.Model):
     def __str__(self):
         return f"{self.name} ({self.category})"
 
+
+class PlanSpec(models.Model):
+    """
+    A single comparison-row cell for a specific HostingPlan.
+    Example: label="RAM", value="2GB", icon="check"/"times"/"text", order=5
+    """
+    ICON_CHOICES = [
+        ("text", "Text"),
+        ("check", "Check"),
+        ("times", "Times"),
+    ]
+
+    plan = models.ForeignKey(HostingPlan, on_delete=models.CASCADE, related_name="specs")
+    label = models.CharField(max_length=120)
+    value = models.CharField(max_length=255, blank=True)
+    icon = models.CharField(max_length=8, choices=ICON_CHOICES, default="text")
+    order = models.PositiveIntegerField(default=0, help_text="Sort order for this row")
+
+    class Meta:
+        ordering = ["order", "label", "id"]
+        unique_together = [("plan", "label")]
+
+    def __str__(self) -> str:
+        return f"{self.plan.name} • {self.label} -> {self.value or self.icon}"
+
 class Checkout(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(HostingPlan, on_delete=models.CASCADE)

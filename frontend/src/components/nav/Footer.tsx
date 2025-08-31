@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
           <Link
             href="/hosting"
-            className="inline-flex items-center justify-center rounded-full bg-blue-800 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-900"
+            className="inline-flex items-center justify-center rounded-full bg-blue-900 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-900"
           >
             View Plans
           </Link>
@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Brand + blurb */}
           <div className="col-span-1 lg:col-span-2">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-md bg-blue-800" aria-hidden />
+              <div className="h-8 w-8 rounded-md bg-blue-900" aria-hidden />
               <span className="text-lg font-semibold text-white">YourBrand</span>
             </div>
             <p className="mt-3 text-sm text-slate-400">

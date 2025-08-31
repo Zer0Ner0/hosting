@@ -140,7 +140,7 @@ export default function Login({ callbackUrl, error: errorParam }: Props) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-lg bg-blue-800 px-4 py-2.5 font-medium text-white transition hover:bg-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-70"
+                className="w-full rounded-lg bg-blue-900 px-4 py-2.5 font-medium text-white transition hover:bg-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-70"
               >
                 {submitting ? "Signing in…" : "Sign in"}
               </button>

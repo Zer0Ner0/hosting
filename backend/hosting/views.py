@@ -9,9 +9,10 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Q
 from typing import Optional
-from .models import HostingPlan, Checkout, Order, OrderItem, Payment
+from .models import HostingPlan, PlanSpec, Checkout, Order, OrderItem, Payment
 from .serializers import (
     HostingPlanSerializer,
+    HostingPlanWithSpecsSerializer,
     CheckoutSerializer,
     OrderSerializer,
     RegisterResponseSerializer,
@@ -61,12 +62,24 @@ def get_hosting_plans(request):
 
 @extend_schema(
     tags=["Plans"],
-    responses={
-        200: HostingPlanSerializer,
-        404: OpenApiResponse(description="Plan not found"),
-    },
-    summary="Get hosting plan detail",
+    summary="Get comparison specs for plans (by category)",
+    responses={200: HostingPlanWithSpecsSerializer(many=True)},
 )
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_plan_specs(request):
+    """
+    Returns all plans within an optional ?category=… along with their PlanSpec rows.
+    Frontend can build the left column by deduping labels across all specs in 'order'.
+    """
+    category = request.GET.get('category')
+    qs = HostingPlan.objects.all()
+    if category:
+        qs = qs.filter(category=category)
+    qs = qs.prefetch_related("specs")
+    data = HostingPlanWithSpecsSerializer(qs, many=True).data
+    return Response(data)
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_hosting_plan_detail(request, plan_id):
