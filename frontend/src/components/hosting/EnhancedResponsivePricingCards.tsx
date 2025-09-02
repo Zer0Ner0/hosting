@@ -183,9 +183,9 @@ const PricingCard = memo(function PricingCard({
         <div className="mb-2">
           <button
             onClick={handleSelectPlan}
-            className={`w-full h-12 rounded-lg border-2 border-blue-800 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
-              ? 'bg-blue-900 text-white hover:bg-blue-700 hover:border-blue-700'
-              : 'bg-transparent text-blue-800 hover:bg-blue-900 hover:text-white'
+            className={`w-full h-12 rounded-lg border-2 border-orange-400 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
+              ? 'bg-orange-400 text-white hover:bg-orange-600 hover:border-orange-600'
+              : 'bg-transparent text-orange-500 hover:bg-orange-500 hover:text-white'
               }`}>
             <span className="sr-only">
               Choose {plan.name} at RM {plan.currentPrice} per month

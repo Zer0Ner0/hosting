@@ -272,7 +272,7 @@ export default function PlanComparison({
                         </div>
                         <a
                           href={`/checkout?plan_id=${plan.id}`}
-                          className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-[#1D4ED8] px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#1a43bb] focus:outline-none"
+                          className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-orange-500 px-4 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none"
                           aria-label={`Order ${plan.name} at ${currency(plan.price)} per month`}
                         >
                           Order now
