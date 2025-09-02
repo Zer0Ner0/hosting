@@ -1,34 +1,54 @@
+/* eslint-disable jsx-a11y/no-redundant-roles */
+"use client";
 import Link from "next/link";
 import * as React from "react";
 import { useSession, signOut } from "next-auth/react";
 import MegaMenu, { MegaMenuItem } from "./MegaMenu";
 
-export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [hostingOpen, setHostingOpen] = React.useState(false);
+export default function Navbar(): JSX.Element {
+  const [mobileOpen, setMobileOpen] = React.useState<boolean>(false);
+  const [hostingOpen, setHostingOpen] = React.useState<boolean>(false);
   const closeTimer = React.useRef<number | null>(null);
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
   const { data: session } = useSession();
   const isAuthed = !!session;
 
+  const clearTimer = React.useCallback((): void => {
+    if (closeTimer.current) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  }, []);
 
-  const openHosting = () => {
-    if (closeTimer.current) { window.clearTimeout(closeTimer.current); closeTimer.current = null; }
+  const openHosting = React.useCallback((): void => {
+    clearTimer();
     setHostingOpen(true);
-  };
-  const scheduleCloseHosting = () => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => setHostingOpen(false), 200); // 200–250ms feels right
-  };
-  const cancelCloseHosting = () => {
-    if (closeTimer.current) { window.clearTimeout(closeTimer.current); closeTimer.current = null; }
-  };
+  }, [clearTimer]);
 
-  const HOSTING_ITEMS: MegaMenuItem[] = [
-    { label: "Web Hosting", href: "/hosting/web", description: "Fast cPanel hosting for sites of any size." },
-    { label: "WordPress Hosting", href: "/hosting/wordpress", description: "Optimized stack for WordPress." },
-    { label: "WooCommerce Hosting", href: "/hosting/woocommerce", description: "Power your online store quickly." },
-    { label: "Email Hosting", href: "/hosting/email", description: "Professional email on your domain." },
-  ];
+  const scheduleCloseHosting = React.useCallback((): void => {
+    clearTimer();
+    // 200–250ms feels right to avoid accidental flicker on hover gaps
+    closeTimer.current = window.setTimeout(() => setHostingOpen(false), 200);
+  }, [clearTimer]);
+
+  const cancelCloseHosting = React.useCallback((): void => {
+    clearTimer();
+  }, [clearTimer]);
+
+  // Return focus to trigger when menu closes (keyboard users)
+  React.useEffect(() => {
+    if (!hostingOpen) triggerRef.current?.focus();
+  }, [hostingOpen]);
+
+  const HOSTING_ITEMS: MegaMenuItem[] = React.useMemo(
+    () => [
+      { label: "Web Hosting", href: "/hosting/web", description: "Fast cPanel hosting for sites of any size." },
+      { label: "WordPress Hosting", href: "/hosting/wordpress", description: "Optimized stack for WordPress." },
+      { label: "WooCommerce Hosting", href: "/hosting/woocommerce", description: "Power your online store quickly." },
+      { label: "Email Hosting", href: "/hosting/email", description: "Professional email on your domain." },
+    ],
+    []
+  );
 
   // Close mega on scroll/nav route changes if needed
   React.useEffect(() => {
@@ -44,13 +64,24 @@ export default function Navbar() {
     if (mobileOpen) setHostingOpen(false);
   }, [mobileOpen]);
 
+  // Cleanup any pending timers on unmount
+  React.useEffect(() => {
+    return () => {
+      if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    };
+  }, []);
+
   return (
     <header className="sticky top-0 z-50">
+      {/* Skip link for keyboard users */}
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:rounded focus:bg-blue-900 focus:px-3 focus:py-2 focus:text-white">
+        Skip to content
+      </a>
       {/* Top bar */}
       <div className="bg-blue-900 text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-sm">
           <div className="flex items-center gap-4">
-            <a href="tel:+60123456789" className="hover:underline">📞 Sales: +60 12-345 6789</a>
+            <a href="tel:60123456789" className="hover:underline">📞 Sales: 60 12-345 6789</a>
             <a href="#chat" className="hover:underline">💬 Live Chat</a>
           </div>
           <div className="hidden sm:block">99.9% Uptime • 24/7 Support</div>
@@ -61,7 +92,7 @@ export default function Navbar() {
       <div
         className="relative border-b border-gray-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60"
       >
-        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4" role="navigation" aria-label="Primary">
           {/* Left: Logo */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center font-semibold text-gray-900">
@@ -74,9 +105,10 @@ export default function Navbar() {
               <li className="relative">
                 <button
                   type="button"
+                  id="hosting-trigger"
                   aria-haspopup="true"
                   aria-expanded={hostingOpen}
-                  aria-controls="hosting-mega"
+                  /* `aria-controls` is omitted because the MegaMenu generates a unique panel id internally and ties back via aria-labelledby */
                   className={[
                     "rounded-lg px-3 py-2 text-sm font-medium",
                     hostingOpen ? "bg-blue-50 text-blue-900" : "text-gray-700 hover:bg-gray-50",
@@ -85,6 +117,7 @@ export default function Navbar() {
                   onMouseLeave={scheduleCloseHosting}
                   onFocus={openHosting}
                   onClick={() => setHostingOpen((v) => !v)}
+                  ref={triggerRef}
                 >
                   Hosting
                 </button>
@@ -103,7 +136,7 @@ export default function Navbar() {
             </ul>
           </div>
 
-          {/* Right: CTA + Mobile toggle */}
+          {/* Right: CTA  Mobile toggle */}
           <div className="flex items-center gap-3">
             {isAuthed ? (
               <button
@@ -136,7 +169,7 @@ export default function Navbar() {
           <MegaMenu
             isOpen={hostingOpen}
             onClose={() => setHostingOpen(false)}
-            anchorId="hosting-mega"
+            anchorId="hosting-trigger"
             items={HOSTING_ITEMS}
             onMouseEnter={cancelCloseHosting}
             onMouseLeave={scheduleCloseHosting}
@@ -187,6 +220,7 @@ export default function Navbar() {
             >
               Blog
             </Link>
+            {/* Anchor to keep skip link target valid on all pages */}
             <Link
               href="#"
               className="sr-only"
