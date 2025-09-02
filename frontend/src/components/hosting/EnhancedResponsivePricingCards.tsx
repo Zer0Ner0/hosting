@@ -1,33 +1,41 @@
-import React, { useState } from 'react';
+'use client'
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { PricingPlan as Plan, PricingFeature, EnhancedResponsivePricingCardsProps } from "@/types/Plan";
 
-const CheckIcon = () => (
-  <svg width="16" height="12" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clipPath="url(#clip0_check)">
-      <path d="M16.4984 12.1761C16.5004 12.3044 16.4758 12.4316 16.426 12.5498C16.3762 12.668 16.3023 12.7746 16.2091 12.8627L8.73653 20.1754L7.33267 21.5486C7.24093 21.6402 7.13168 21.7125 7.01143 21.761C6.89118 21.8096 6.7624 21.8334 6.63273 21.8312C6.50262 21.8339 6.3733 21.8102 6.25256 21.7617C6.13182 21.7131 6.02214 21.6406 5.93014 21.5486L4.52627 20.1754L0.789303 16.5184C0.696124 16.4302 0.622289 16.3237 0.572485 16.2055C0.522681 16.0873 0.497997 15.96 0.499998 15.8318C0.499998 15.5625 0.595989 15.3332 0.789303 15.1452L2.19317 13.772C2.28495 13.6799 2.39437 13.6073 2.51486 13.5585C2.63535 13.5097 2.76445 13.4857 2.89443 13.488C3.1704 13.488 3.40372 13.5827 3.59703 13.772L6.63273 16.7517L13.4027 10.1163C13.5894 9.92969 13.8427 9.82836 14.1053 9.8337C14.38 9.8337 14.6146 9.92702 14.8066 10.1163L16.2105 11.4895C16.3998 11.6682 16.5038 11.9175 16.4998 12.1775L16.4984 12.1761Z" fill="#00B090" />
-    </g>
-    <defs>
-      <clipPath id="clip0_check">
-        <rect width="16" height="11.9979" fill="white" transform="translate(0.5 0.5)" />
-      </clipPath>
-    </defs>
-  </svg>
-);
+const CheckIcon = memo(function CheckIcon(): React.ReactElement {
+  return (
+    <svg width="16" height="12" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clipPath="url(#clip0_check)">
+        <path d="M16.4984 12.1761C16.5004 12.3044 16.4758 12.4316 16.426 12.5498C16.3762 12.668 16.3023 12.7746 16.2091 12.8627L8.73653 20.1754L7.33267 21.5486C7.24093 21.6402 7.13168 21.7125 7.01143 21.761C6.89118 21.8096 6.7624 21.8334 6.63273 21.8312C6.50262 21.8339 6.3733 21.8102 6.25256 21.7617C6.13182 21.7131 6.02214 21.6406 5.93014 21.5486L4.52627 20.1754L0.789303 16.5184C0.696124 16.4302 0.622289 16.3237 0.572485 16.2055C0.522681 16.0873 0.497997 15.96 0.499998 15.8318C0.499998 15.5625 0.595989 15.3332 0.789303 15.1452L2.19317 13.772C2.28495 13.6799 2.39437 13.6073 2.51486 13.5585C2.63535 13.5097 2.76445 13.4857 2.89443 13.488C3.1704 13.488 3.40372 13.5827 3.59703 13.772L6.63273 16.7517L13.4027 10.1163C13.5894 9.92969 13.8427 9.82836 14.1053 9.8337C14.38 9.8337 14.6146 9.92702 14.8066 10.1163L16.2105 11.4895C16.3998 11.6682 16.5038 11.9175 16.4998 12.1775L16.4984 12.1761Z" fill="#00B090" />
+      </g>
+      <defs>
+        <clipPath id="clip0_check">
+          <rect width="16" height="11.9979" fill="white" transform="translate(0.5 0.5)" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+});
 
-const MinusIcon = () => (
-  <div className="w-4 h-6 flex items-center justify-center">
-    <div className="w-4 h-px bg-[#727586]"></div>
-  </div>
-);
+const MinusIcon = memo(function MinusIcon(): React.ReactElement {
+  return (
+    <div className="w-4 h-6 flex items-center justify-center" aria-hidden="true">
+      <div className="w-4 h-px bg-[#727586]" />
+    </div>
+  );
+});
 
-const ArrowDownIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7 10L12 15L17 10" stroke="#673DE6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+const ArrowDownIcon = memo(function ArrowDownIcon(): React.ReactElement {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7 10L12 15L17 10" stroke="#673DE6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+});
 
-const FeatureItem: React.FC<{ feature: PricingFeature }> = ({ feature }) => {
-  const renderText = () => {
+const FeatureItem = memo(function FeatureItem({ feature }: { feature: PricingFeature }): React.ReactElement {
+  const renderText = (): React.ReactNode => {
     if (feature.bold) {
       const parts = feature.text.split(feature.bold);
       return (
@@ -52,22 +60,31 @@ const FeatureItem: React.FC<{ feature: PricingFeature }> = ({ feature }) => {
       </div>
     </div>
   );
-};
+});
 
-const PricingCard: React.FC<{
-  plan: Plan;
-  showFeatureLimit?: number;
-  className?: string;
-}> = ({ plan, showFeatureLimit = 15, className = '' }) => {
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
+const PricingCard = memo(function PricingCard({
+  plan,
+  showFeatureLimit = 15,
+  className = '',
+  comparisonHref,
+}: {
+  plan: Plan
+  showFeatureLimit?: number
+  className?: string
+  comparisonHref?: string
+}): React.ReactElement {
+  const [showAllFeatures, setShowAllFeatures] = useState<boolean>(false);
 
-  const visibleFeatures = showAllFeatures ? plan.features : plan.features.slice(0, showFeatureLimit);
+  const visibleFeatures = useMemo(
+    () => (showAllFeatures ? plan.features : plan.features.slice(0, showFeatureLimit)),
+    [showAllFeatures, plan.features, showFeatureLimit]
+  );
 
-  const handleSelectPlan = () => {
-    if (plan.onSelectPlan) {
-      plan.onSelectPlan(plan.id);
-    }
-  };
+  const handleSelectPlan = useCallback((): void => {
+    plan.onSelectPlan?.(plan.id);
+  }, [plan]);
+
+  const panelId = useMemo(() => `features-${plan.id}`, [plan.id]);
 
   return (
     <div className={`relative w-full h-full mx-auto ${className} text-center`}>
@@ -141,17 +158,19 @@ const PricingCard: React.FC<{
         <div className="border-t border-[#D5DFFF] mb-8"></div>
 
         {/* Features List */}
-        <div className="space-y-0 mb-8 flex-1 text-left">
+        <div id={panelId} className="space-y-0 mb-8 flex-1 text-left" aria-live="polite">
           {visibleFeatures.map((feature, index) => (
-            <FeatureItem key={index} feature={feature} />
+            <FeatureItem key={`${feature.text}-${index}`} feature={feature} />
           ))}
         </div>
 
         {/* See All Features */}
         {plan.features.length > showFeatureLimit && (
           <button
-            onClick={() => setShowAllFeatures(!showAllFeatures)}
+            onClick={() => setShowAllFeatures((v) => !v)}
             className="mt-auto flex items-center gap-2 text-[#000000] hover:text-blue-800 transition-colors duration-200 font-['DM_Sans']"
+            aria-expanded={showAllFeatures}
+            aria-controls={panelId}
           >
             <span>{showAllFeatures ? 'Show less features' : 'See all features'}</span>
             <div className={`transform transition-transform duration-200 ${showAllFeatures ? 'rotate-180' : ''}`}>
@@ -161,28 +180,48 @@ const PricingCard: React.FC<{
         )}
 
         {/* Choose Plan Button */}
-        <div className="mb-8">
+        <div className="mb-2">
           <button
             onClick={handleSelectPlan}
             className={`w-full h-12 rounded-lg border-2 border-blue-800 font-bold text-base transition-all duration-200 font-['DM_Sans'] ${plan.buttonVariant === 'filled'
               ? 'bg-blue-900 text-white hover:bg-blue-700 hover:border-blue-700'
               : 'bg-transparent text-blue-800 hover:bg-blue-900 hover:text-white'
               }`}>
-            {plan.buttonText || 'Choose plan'}
+            <span className="sr-only">
+              Choose {plan.name} at RM {plan.currentPrice} per month
+            </span>
+            <span aria-hidden="true">{plan.buttonText || 'Choose plan'}</span>
           </button>
         </div>
+
+        {/* See more features (category-aware deep link) */}
+        {comparisonHref && (
+          <div className="mb-8">
+            <Link
+              href={comparisonHref}
+              scroll={false}
+              className="inline-flex items-center justify-center gap-2 text-sm font-bold text-blue-900 hover:underline"
+            >
+              See more features
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 10l5 5 5-5" stroke="#1D4ED8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
-};
+});
 
-const EnhancedResponsivePricingCards: React.FC<EnhancedResponsivePricingCardsProps> = ({
+const EnhancedResponsivePricingCards = memo(function EnhancedResponsivePricingCards({
   plans,
   title,
   subtitle,
   className = '',
-  showFeatureLimit = 15
-}) => {
+  showFeatureLimit = 15,
+  comparisonHref
+}: EnhancedResponsivePricingCardsProps & { comparisonHref?: string }): React.ReactElement {
   return (
     <div className={`font-['DM_Sans'] bg-white py-8 lg:py-12 ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -206,9 +245,10 @@ const EnhancedResponsivePricingCards: React.FC<EnhancedResponsivePricingCardsPro
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
           {plans.map((plan, index) => (
             <PricingCard
-              key={plan.id || index}
+              key={String(plan.id ?? index)}
               plan={plan}
               showFeatureLimit={showFeatureLimit}
+              comparisonHref={comparisonHref}
               className="w-full"
             />
           ))}
@@ -216,6 +256,6 @@ const EnhancedResponsivePricingCards: React.FC<EnhancedResponsivePricingCardsPro
       </div>
     </div>
   );
-};
+});
 
 export default EnhancedResponsivePricingCards;

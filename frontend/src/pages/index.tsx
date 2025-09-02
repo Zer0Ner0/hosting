@@ -1,4 +1,6 @@
 import Head from "next/head";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import DomainSearchBox from "@/components/home/DomainSearchBox";
 import TablePlans from "@/components/home/TablePlans";
 import FaqSection from "@/components/home/FaqSection";
@@ -8,6 +10,30 @@ import FeatureRow from "@/components/home/FeatureRow";
 import HighlightsStrip from "@/components/home/HighlightsStrip";
 
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Preload both the comparison specs and prices for all categories on first visit.
+    const cats = ["web", "wordpress", "email", "woocommerce"] as const;
+    const prefetch = async (cat: typeof cats[number]) => {
+      try {
+        const [specRes, priceRes] = await Promise.all([
+          fetch(`http://localhost:8000/api/plans/specs/?category=${cat}`),
+          fetch(`http://localhost:8000/api/plans/?category=${cat}`),
+        ]);
+        const [specData, priceData] = await Promise.all([specRes.json(), priceRes.json()]);
+        // cache in sessionStorage so the destination page can render instantly
+        sessionStorage.setItem(`preload:specs:${cat}`, JSON.stringify(specData));
+        sessionStorage.setItem(`preload:prices:${cat}`, JSON.stringify(priceData));
+      } catch {
+        // ignore network errors; page will still fetch on demand
+      }
+    };
+    cats.forEach(prefetch);
+    // also prefetch the page code for faster route transition
+    router.prefetch("/hosting/web");
+  }, [router]);
+
   return (
     <>
       <Head>
@@ -100,6 +126,28 @@ export default function HomePage() {
       </section>
       <HighlightsStrip />
 
+      {/*
+        Preload plans for all categories into sessionStorage so TablePlans can render instantly.
+        This runs once on first visit to the homepage.
+      */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+(function(){
+  if (typeof window==='undefined') return;
+  if (sessionStorage.getItem('preload:plans:done')) return;
+  var API_BASE = (window.__NEXT_DATA__?.props?.pageProps?.NEXT_PUBLIC_API_BASE) || '${process.env.NEXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:8000'}';
+  ['web','wordpress','email','woocommerce'].forEach(function(cat){
+    fetch(API_BASE + '/api/plans/?category=' + cat)
+      .then(function(r){return r.ok?r.json():Promise.reject(r.status)})
+      .then(function(json){ sessionStorage.setItem('preload:prices:'+cat, JSON.stringify(json)); })
+      .catch(function(){ /* ignore */ });
+  });
+  sessionStorage.setItem('preload:plans:done', '1');
+})();`
+        }}
+      />
+
       {/* PLANS TEASER (pulls from /api/plans) */}
       <section aria-label="Popular plans" className="bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
@@ -110,7 +158,7 @@ export default function HomePage() {
             Choose a plan and scale when you grow.
           </p>
           <div className="mt-8">
-            <TablePlans />
+            <TablePlans/>
             <TrustBar />
           </div>
         </div>

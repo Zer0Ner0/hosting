@@ -1,16 +1,88 @@
-import { ReactNode } from "react";
+import React, { memo, ReactNode, useMemo } from "react";
 
 export type FAQItem = { q: string; a: ReactNode };
 
-type Props = {
+
+export type FAQProps = {
+  /** Collapsible Q&A list */
   items: FAQItem[];
   heading?: string;
   subheading?: string;
+  /** Accessible label fallback when no heading/subheading is provided */
+  ariaLabel?: string;
+  /** Optionally open a specific item by default (index) */
+  defaultOpenIndex?: number | null;
 };
 
-export default function FAQ({ items, heading, subheading }: Props) {
+const ChevronIcon = memo(function ChevronIcon() {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+    <svg
+      className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+});
+
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
+const FAQEntry = memo(function FAQEntry({
+  item,
+  index,
+  defaultOpenIndex,
+}: {
+  item: FAQItem;
+  index: number;
+  defaultOpenIndex?: number | null;
+}) {
+  const id = useMemo(() => `faq-${slugify(item.q)}-${index}`, [item.q, index]);
+  const open = defaultOpenIndex === index;
+  return (
+    <details
+      className="group focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
+      aria-labelledby={`${id}-summary`}
+      {...(open ? { open: true } : {})}
+    >
+      <summary
+        id={`${id}-summary`}
+        className="flex cursor-pointer list-none items-center justify-between px-5 py-4 outline-none"
+      >
+        <span className="text-left text-base font-medium">{item.q}</span>
+        <ChevronIcon />
+      </summary>
+      <div className="px-5 pb-5 pt-0 text-sm text-gray-600">{item.a}</div>
+    </details>
+  );
+});
+
+export default function FAQ({
+  items,
+  heading,
+  subheading,
+  ariaLabel,
+  defaultOpenIndex = null,
+}: FAQProps): JSX.Element {
+  const sectionLabel = useMemo(() => {
+    if (ariaLabel) return ariaLabel;
+    if (heading) return heading;
+    if (subheading) return subheading;
+    return "Frequently Asked Questions";
+  }, [ariaLabel, heading, subheading]);
+
+  return (
+    <section
+      className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8"
+      aria-label={sectionLabel}
+    >
       {(heading || subheading) && (
         <header className="mb-8 text-center">
           {heading && <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{heading}</h2>}
@@ -18,28 +90,17 @@ export default function FAQ({ items, heading, subheading }: Props) {
         </header>
       )}
 
-      <div className="divide-y rounded-2xl border shadow-sm">
-        {items.map((item, idx) => (
-          <details key={idx} className="group" aria-label={`FAQ item ${idx + 1}`}>
-            <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4">
-              <span className="text-left text-base font-medium">{item.q}</span>
-              <svg
-                className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </summary>
-            <div className="px-5 pb-5 pt-0 text-sm text-gray-600">{item.a}</div>
-          </details>
-        ))}
-      </div>
+      {(!items || items.length === 0) ? (
+          <p className="text-center text-sm text-gray-500">No questions yet.</p>
+      ) : (
+          <div className="divide-y rounded-2xl border shadow-sm" role="list">
+              {items.map((item, idx) => (
+                  <div role="listitem" key={`${item.q}-${idx}`} className="contents">
+                      <FAQEntry item={item} index={idx} defaultOpenIndex={defaultOpenIndex ?? undefined} />
+                  </div>
+              ))}
+          </div>
+      )}
     </section>
   );
 }

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import TrustBar from "@/components/home/TrustBar";
 import FAQ from "@/components/common/FAQ";
@@ -7,6 +9,28 @@ import PlanComparison from "@/components/home/PlanComparison";
 import Image from "next/image";
 
 export default function WebHostingPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Scroll to hash after client navigation (with a few retries)
+    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    if (!hash) return;
+
+    let tries = 0;
+    const maxTries = 10;          // ~1s total
+    const interval = 100;         // ms
+    const tick = () => {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (++tries < maxTries) setTimeout(tick, interval);
+    };
+    // Kick off once the route (and layout) is ready
+    setTimeout(tick, 0);
+  }, [router.asPath]);
+
   const faqs = [
     {
       q: "What’s included with Web Hosting?",
@@ -379,7 +403,7 @@ export default function WebHostingPage() {
       </section>
 
       {/* Detailed comparison table (DB-backed) */}
-      <PlanComparison category="web" />
+      <PlanComparison category="web" anchorId="web-comparison" />
 
       <FAQ
         items={faqs}

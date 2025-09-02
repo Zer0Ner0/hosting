@@ -1,74 +1,82 @@
+'use client'
+import React, { memo, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { Plan, PricingFeature } from '@/types/Plan'
+import type { PricingPlan, PricingFeature } from '@/types/Plan'
 import EnhancedResponsivePricingCards from '@/components/hosting/EnhancedResponsivePricingCards'
 
-type Props = {
-  plans: Plan[]
+
+interface Props {
+  plans: PricingPlan[]
   title?: string
   subtitle?: string
   showFeatureLimit?: number
 }
 
-export default function HostingPlanList({
+function HostingPlanList({
   plans,
   title = undefined,
   subtitle = undefined,
   showFeatureLimit = 15,
-}: Props) {
+}: Props): React.ReactElement {
   const router = useRouter()
 
   if (!plans?.length) {
-    return <p className="text-center text-[#727586]">No plans available for this category.</p>
+    return (
+      <p role="status" className="text-center text-[#727586]">
+        No plans available for this category.
+      </p>
+    )
   }
 
-  const mapped: Plan[] = plans.map((p) => {
-    const price = parseFloat(p.originalPrice || '0') || 0
-    const original = (price * 1.5).toFixed(2)
-    const renewal = (price * 1.2).toFixed(2)
-    const savePct = Math.max(0, Math.round((1 - price / parseFloat(original)) * 100))
+  const buildSelectHandler = useCallback(
+    (id: PricingPlan['id']) => () => {
+      router.push(`/login?plan_id=${id}`)
+    },
+    [router]
+  )
 
-    return {
-      id: String(p.id),
-      name: p.name,
-      description: `Perfect for ${p.name.toLowerCase()} websites.`,
-      category: p.category,
-      billing_cycle: p.billing_cycle,
-      originalPrice: original,
-      currentPrice: price.toFixed(2),
-      savePercentage: `Save ${savePct}%`,
-      term: p.billing_cycle === 'yearly' ? 'For 12-month term' : 'For monthly term',
-      renewalPrice: renewal,
-      features: (p.features || []).map((feature): PricingFeature => {
-        // Handle different input types
-        if (typeof feature === 'string') {
-          return {
-            text: feature,
-            included: true,
-          };
-        }
+  const mapFeature = (feature: string | PricingFeature): PricingFeature => {
+    if (typeof feature === 'string') {
+      return { text: feature, included: true }
+    }
+    if (typeof feature === 'object' && 'text' in feature && feature.text) {
+      return {
+        text: feature.text,
+        included: feature.included ?? true,
+        bold: feature.bold,
+        underlined: feature.underlined,
+      }
+    }
+    return { text: String(feature), included: true }
+  }
 
-        // If it's already a PricingFeature object
-        if (typeof feature === 'object' && feature.text) {
-          return {
-            text: feature.text,
-            included: true,
-            bold: feature.bold,
-            underlined: feature.underlined,
-          };
-        }
+  const mapped: PricingPlan[] = useMemo(() => {
+    return plans.map((p) => {
+      // Derive prices if not provided
+      const current = Number.parseFloat(String(p.currentPrice ?? p.originalPrice ?? '0')) || 0
+      const original = Number.parseFloat(String(p.originalPrice ?? current * 1.5)) || current * 1.5
+      const renewal = Number.parseFloat(String(p.renewalPrice ?? current * 1.2)) || current * 1.2
+      const savePct = Math.max(0, Math.round((1 - current / original) * 100))
 
-        // Fallback for any other case
-        return {
-          text: String(feature),
-          included: true,
-        };
-      }),
-      isPopular: p.isPopular || false,
-      buttonVariant: (p.isPopular || false) ? 'filled' : 'outline',
-      buttonText: 'Get Started',
-      onSelectPlan: () => router.push(`/login?plan_id=${p.id}`),
-    };
-  })
+      const features = (p.features ?? []).map(mapFeature)
+
+      return {
+        ...p,
+        id: String(p.id),
+        description: p.description ?? `Perfect for ${String(p.name).toLowerCase()} websites.`,
+        originalPrice: original.toFixed(2),
+        currentPrice: current.toFixed(2),
+        savePercentage: p.savePercentage ?? `Save ${savePct}%`,
+        term: p.term ?? 'For monthly term',
+        renewalPrice: renewal.toFixed(2),
+        features,
+        isPopular: !!p.isPopular,
+        buttonVariant: p.buttonVariant ?? (p.isPopular ? 'filled' : 'outline'),
+        buttonText: p.buttonText ?? 'Get Started',
+        onSelectPlan: p.onSelectPlan ?? buildSelectHandler(p.id),
+      }
+    })
+  }, [buildSelectHandler, plans])
 
   return (
     <EnhancedResponsivePricingCards
@@ -79,3 +87,5 @@ export default function HostingPlanList({
     />
   )
 }
+
+export default memo(HostingPlanList)
