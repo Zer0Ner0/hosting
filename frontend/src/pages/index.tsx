@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import DomainSearchBox from "@/components/home/DomainSearchBox";
@@ -8,30 +9,45 @@ import Testimonials from "@/components/home/Testimonials";
 import TrustBar from "@/components/home/TrustBar";
 import FeatureRow from "@/components/home/FeatureRow";
 import HighlightsStrip from "@/components/home/HighlightsStrip";
+ 
+// Networking pattern: centralize API base
+const API_BASE: string = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
+const CATEGORIES = ["web", "wordpress", "email", "woocommerce"] as const;
 
 export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Preload both the comparison specs and prices for all categories on first visit.
-    const cats = ["web", "wordpress", "email", "woocommerce"] as const;
-    const prefetch = async (cat: typeof cats[number]) => {
+    // Preload comparison specs & prices for all categories (with AbortController & ok checks)
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("preload:plans:done")) {
+      router.prefetch("/hosting");
+      return;
+    }
+    const ac = new AbortController();
+    const loadCategory = async (cat: (typeof CATEGORIES)[number]): Promise<void> => {
       try {
         const [specRes, priceRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/plans/specs/?category=${cat}`),
-          fetch(`http://localhost:8000/api/plans/?category=${cat}`),
+          fetch(`${API_BASE}/api/plans/specs/?category=${cat}`, { signal: ac.signal }),
+          fetch(`${API_BASE}/api/plans/?category=${cat}`, { signal: ac.signal }),
         ]);
-        const [specData, priceData] = await Promise.all([specRes.json(), priceRes.json()]);
-        // cache in sessionStorage so the destination page can render instantly
-        sessionStorage.setItem(`preload:specs:${cat}`, JSON.stringify(specData));
-        sessionStorage.setItem(`preload:prices:${cat}`, JSON.stringify(priceData));
+        if (specRes.ok) {
+          const specData = await specRes.json();
+          sessionStorage.setItem(`preload:specs:${cat}`, JSON.stringify(specData));
+        }
+        if (priceRes.ok) {
+          const priceData = await priceRes.json();
+          sessionStorage.setItem(`preload:prices:${cat}`, JSON.stringify(priceData));
+        }
       } catch {
-        // ignore network errors; page will still fetch on demand
+        // swallow; on-demand fetch will handle it
       }
     };
-    cats.forEach(prefetch);
-    // also prefetch the page code for faster route transition
-    router.prefetch("/hosting/web");
+    CATEGORIES.forEach(loadCategory);
+    sessionStorage.setItem("preload:plans:done", "1");
+    // Prefetch hosting page code for snappier navigation
+    router.prefetch("/hosting");
+    return () => ac.abort();
   }, [router]);
 
   return (
@@ -82,16 +98,19 @@ export default function HomePage() {
         </div>
       </section> */}
       {/* HERO — NameHero-style with background image (fluid 1792:728) */}
-      <section className="relative overflow-hidden bg-white">
+      <section className="relative overflow-hidden bg-white" aria-label="Hero: Fast hosting and domains">
         <div className="mx-auto w-full max-w-[1920px]">
           {/* Aspect-ratio wrapper */}
           <div className="relative aspect-[1792/728] min-h-[520px] sm:min-h-[560px] lg:min-h-[620px]">
             {/* background image */}
             <div className="absolute inset-0">
-              <img
+              <Image
                 src="/images/hero-section.svg"
                 alt=""
-                className="h-full w-full object-cover object-center"
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="100vw"
               />
             </div>
 
@@ -111,6 +130,7 @@ export default function HomePage() {
                   <a
                     href="/hosting"
                     className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-0"
+                    aria-label="Browse hosting plans"
                   >
                     Get Started Now
                   </a>
@@ -126,27 +146,7 @@ export default function HomePage() {
       </section>
       <HighlightsStrip />
 
-      {/*
-        Preload plans for all categories into sessionStorage so TablePlans can render instantly.
-        This runs once on first visit to the homepage.
-      */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-(function(){
-  if (typeof window==='undefined') return;
-  if (sessionStorage.getItem('preload:plans:done')) return;
-  var API_BASE = (window.__NEXT_DATA__?.props?.pageProps?.NEXT_PUBLIC_API_BASE) || '${process.env.NEXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:8000'}';
-  ['web','wordpress','email','woocommerce'].forEach(function(cat){
-    fetch(API_BASE + '/api/plans/?category=' + cat)
-      .then(function(r){return r.ok?r.json():Promise.reject(r.status)})
-      .then(function(json){ sessionStorage.setItem('preload:prices:'+cat, JSON.stringify(json)); })
-      .catch(function(){ /* ignore */ });
-  });
-  sessionStorage.setItem('preload:plans:done', '1');
-})();`
-        }}
-      />
+      {/* Inline preloading script removed; handled via useEffect with AbortController */}
 
       {/* PLANS TEASER (pulls from /api/plans) */}
       <section aria-label="Popular plans" className="bg-white">
@@ -158,14 +158,14 @@ export default function HomePage() {
             Choose a plan and scale when you grow.
           </p>
           <div className="mt-8">
-            <TablePlans/>
+            <TablePlans />
             <TrustBar />
           </div>
         </div>
       </section>
 
       {/* Domain Search Box*/}
-      <section className="bg-blue-900">
+      <section className="bg-blue-900" aria-label="Find your domain">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl sm:text-4xl font-bold text-white font-['DM_Sans']">
             Your Online Journey Starts With A Perfect Domain
@@ -210,14 +210,14 @@ export default function HomePage() {
       />
 
       {/* SOCIAL PROOF */}
-      <section className="bg-blue-900">
+      <section className="bg-blue-900" aria-label="Customer testimonials">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <Testimonials />
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="bg-white">
+      <section className="bg-white" aria-label="Frequently asked questions">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             Frequently asked questions
