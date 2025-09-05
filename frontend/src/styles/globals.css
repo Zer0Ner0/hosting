@@ -2,12 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --Branding-hostinger-Periwinkle: #D5DFFF;
-  --Branding-hostinger-White: #FFF;
-  --Branding-hostinger-Meteorite: #2F1C6A;
-  --Branding-hostinger-Storm-Gray: #727586;
-  --Branding-hostinger-Royal-Blue: #673DE6;
-  --Branding-hostinger-Malibu: #8C85FF;
-  --Branding-hostinger-Zircon: #FAFBFF;
+/* Base theming */
+@layer base {
+  html,
+  body {
+    @apply bg-neutral-50 text-neutral-900;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-neutral-900;
+  }
+
+  a {
+    @apply text-primary hover:text-primary-hover;
+  }
+}
+
+/* Reusable button styles */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold
+           bg-primary text-white shadow
+           hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-accent-gold focus-visible:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold
+           text-primary bg-transparent hover:bg-neutral-100;
+  }
 }

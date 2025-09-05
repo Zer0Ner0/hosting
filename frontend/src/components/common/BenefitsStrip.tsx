@@ -1,4 +1,4 @@
-import React, { memo, ReactNode, useMemo } from "react";
+import React, { ReactNode } from "react";
 
 export type BenefitItem = {
   title: string;
@@ -15,7 +15,7 @@ export type BenefitsStripProps = {
   ariaLabel?: string;
 };
 
-const DefaultIcon = memo(function DefaultIcon() {
+const DefaultIcon = function DefaultIcon(): JSX.Element {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
       <path
@@ -24,36 +24,41 @@ const DefaultIcon = memo(function DefaultIcon() {
       />
     </svg>
   );
-});
+};
 
-const BenefitCard = memo(function BenefitCard({
+const BenefitCard = function BenefitCard({
   item,
   headingId,
 }: {
   item: BenefitItem;
   headingId?: string;
-}) {
+}): JSX.Element {
   return (
     <li
       className="flex items-start gap-3 rounded-2xl border bg-white/80 p-4 shadow-sm"
       aria-labelledby={headingId}
     >
       <span
-        className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-900 text-white"
+        className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#166534] text-white"
         aria-hidden="true"
       >
         {item.icon ?? <DefaultIcon />}
       </span>
       <div>
         {/* The title acts as the card label for screen readers */}
-        <div id={headingId} className="font-medium">
+        <div
+          id={headingId}
+          className="font-heading text-neutral-900 font-medium"
+        >
           {item.title}
         </div>
-        {item.desc && <p className="text-sm text-gray-600">{item.desc}</p>}
+        {item.desc && (
+          <p className="font-sans text-sm text-gray-600">{item.desc}</p>
+        )}
       </div>
     </li>
   );
-});
+};
 
 export default function BenefitsStrip({
   items,
@@ -61,13 +66,7 @@ export default function BenefitsStrip({
   subheading,
   ariaLabel,
 }: BenefitsStripProps): JSX.Element {
-  const sectionLabel = useMemo(() => {
-    if (ariaLabel) return ariaLabel;
-    if (heading) return heading;
-    if (subheading) return subheading;
-    return "Benefits";
-  }, [ariaLabel, heading, subheading]);
-
+  const sectionLabel = ariaLabel ?? heading ?? subheading ?? "Benefits";
   const hasHeader = Boolean(heading || subheading);
 
   if (!items || items.length === 0) {
@@ -80,17 +79,22 @@ export default function BenefitsStrip({
         {hasHeader && (
           <header className="mb-6 text-center">
             {heading && (
-              <h2 className="text-2xl font-semibold sm:text-3xl">{heading}</h2>
+              <h2 className="font-heading text-neutral-900 text-2xl font-semibold sm:text-3xl">
+                {heading}
+              </h2>
             )}
             {subheading && (
-              <p className="mt-1 text-muted-foreground">{subheading}</p>
+              <p className="font-sans mt-1 text-gray-600">{subheading}</p>
             )}
           </header>
         )}
-        <p className="text-center text-sm text-gray-500">No benefits to show yet.</p>
+        <p className="font-sans text-center text-sm text-gray-500">
+          No benefits to show yet.
+        </p>
       </section>
     );
   }
+
   return (
     <section
       className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
@@ -99,17 +103,24 @@ export default function BenefitsStrip({
       {hasHeader && (
         <header className="mb-6 text-center">
           {heading && (
-            <h2 className="text-2xl font-semibold sm:text-3xl">{heading}</h2>
+            <h2 className="font-heading text-neutral-900 text-2xl font-semibold sm:text-3xl">
+              {heading}
+            </h2>
           )}
           {subheading && (
-            <p className="mt-1 text-muted-foreground">{subheading}</p>
+            <p className="font-sans mt-1 text-gray-600">{subheading}</p>
           )}
         </header>
       )}
 
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
+      <ul
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        role="list"
+      >
         {items.map((it, idx) => {
-          const id = `benefit-${(it.title || "item").toLowerCase().replace(/\s+/g, "-")}-${idx}`;
+          const id = `benefit-${(it.title || "item")
+            .toLowerCase()
+            .replace(/\s+/g, "-")}-${idx}`;
           return <BenefitCard key={id} item={it} headingId={id} />;
         })}
       </ul>

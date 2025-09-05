@@ -1,8 +1,9 @@
+// frontend/src/components/nav/MegaMenu.tsx
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 "use client";
 
 import Link from "next/link";
-import * as React from "react";
+import React, { useCallback, useEffect, useId, useRef } from "react";
 
 export type MegaMenuItem = {
   label: string;
@@ -27,15 +28,15 @@ export default function MegaMenu({
   onMouseEnter,
   onMouseLeave,
 }: MegaMenuProps): JSX.Element {
-  const panelRef = React.useRef<HTMLDivElement | null>(null);
-  const itemRefs = React.useRef<Array<HTMLAnchorElement | null>>([]);
-  const firstFocusable = React.useRef<HTMLAnchorElement | null>(null);
-  const lastFocusable = React.useRef<HTMLAnchorElement | null>(null);
-  const regionId = React.useId();
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+  const firstFocusable = useRef<HTMLAnchorElement | null>(null);
+  const lastFocusable = useRef<HTMLAnchorElement | null>(null);
+  const regionId = useId();
   const descId = `${regionId}-desc`;
 
   // Close on Escape
-  React.useEffect((): void | (() => void) => {
+  useEffect(() => {
     function onKey(e: KeyboardEvent): void {
       if (e.key === "Escape") onClose();
     }
@@ -43,11 +44,11 @@ export default function MegaMenu({
       document.addEventListener("keydown", onKey);
       return () => document.removeEventListener("keydown", onKey);
     }
-    return undefined;
+    return;
   }, [isOpen, onClose]);
 
   // Close on click outside
-  React.useEffect((): void | (() => void) => {
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent): void {
       if (!panelRef.current) return;
       if (!panelRef.current.contains(e.target as Node)) onClose();
@@ -56,62 +57,56 @@ export default function MegaMenu({
       document.addEventListener("mousedown", handleClickOutside);
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
-    return undefined;
+    return;
   }, [isOpen, onClose]);
 
   // Move focus to first item when opened
-  React.useEffect((): void | (() => void) => {
-    if (!isOpen) return undefined;
+  useEffect(() => {
+    if (!isOpen) return;
     const rafId = window.requestAnimationFrame(() => {
       const focusables = itemRefs.current.filter(Boolean) as HTMLAnchorElement[];
       if (focusables.length > 0) {
-        firstFocusable.current = focusables[0] ?? null;
-        lastFocusable.current = focusables[focusables.length - 1] ?? null;
+        firstFocusable.current = focusables[0];
+        lastFocusable.current = focusables[focusables.length - 1];
         firstFocusable.current?.focus();
       }
     });
     return () => window.cancelAnimationFrame(rafId);
   }, [isOpen, items]);
 
-  // Keyboard navigation within menu (Arrow keys + focus trap with Tab)
-  const onKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>): void => {
-      const focusables = itemRefs.current.filter(Boolean) as HTMLAnchorElement[];
-      if (focusables.length === 0) return;
+  // Keyboard navigation (arrows + focus trap with Tab)
+  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>): void => {
+    const focusables = itemRefs.current.filter(Boolean) as HTMLAnchorElement[];
+    if (focusables.length === 0) return;
 
-      const currentIndex = focusables.findIndex((el) => el === document.activeElement);
+    const currentIndex = focusables.findIndex((el) => el === document.activeElement);
 
-      // Trap focus with Tab/Shift+Tab
-      if (e.key === "Tab") {
-        if (e.shiftKey && document.activeElement === firstFocusable.current) {
-          e.preventDefault();
-          lastFocusable.current?.focus();
-          return;
-        }
-        if (!e.shiftKey && document.activeElement === lastFocusable.current) {
-          e.preventDefault();
-          firstFocusable.current?.focus();
-          return;
-        }
-        // allow normal tabbing otherwise
+    if (e.key === "Tab") {
+      if (e.shiftKey && document.activeElement === firstFocusable.current) {
+        e.preventDefault();
+        lastFocusable.current?.focus();
         return;
       }
-
-      // Linear arrow navigation
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      if (!e.shiftKey && document.activeElement === lastFocusable.current) {
         e.preventDefault();
-        const nextIndex = (currentIndex + 1 + focusables.length) % focusables.length;
-        focusables[nextIndex]?.focus();
+        firstFocusable.current?.focus();
         return;
       }
-      if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-        e.preventDefault();
-        const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
-        focusables[prevIndex]?.focus();
-      }
-    },
-    []
-  );
+      return;
+    }
+
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1 + focusables.length) % focusables.length;
+      focusables[nextIndex]?.focus();
+      return;
+    }
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
+      focusables[prevIndex]?.focus();
+    }
+  }, []);
 
   return (
     <div
@@ -122,12 +117,12 @@ export default function MegaMenu({
       aria-hidden={!isOpen}
       className={[
         "absolute inset-x-0 top-full mt-1 z-50 transition-all duration-150",
-        isOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none",
+        isOpen
+          ? "opacity-100 translate-y-0 pointer-events-auto"
+          : "opacity-0 -translate-y-2 pointer-events-none",
       ].join(" ")}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      // (Optional) If you see occasional flicker crossing tiny gaps, switch to pointer events:
-      // onPointerEnter={onMouseEnter} onPointerLeave={onMouseLeave}
       onKeyDown={onKeyDown}
     >
       <div className="mx-auto max-w-7xl px-4">
@@ -144,10 +139,9 @@ export default function MegaMenu({
               <Link
                 key={it.label}
                 href={it.href}
-                className="group rounded-xl p-4 transition hover:bg-blue-50 focus:outline-none focus-visible:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-200"
+                className="group rounded-xl p-4 transition hover:bg-emerald-50 focus:outline-none focus-visible:bg-emerald-50 focus-visible:ring-2 focus-visible:ring-emerald-200"
                 onClick={onClose}
                 onMouseDown={(e) => {
-                  // Prevent lingering focus highlight from mouse/touch clicks
                   e.currentTarget.blur();
                 }}
                 ref={(el) => {
@@ -156,9 +150,11 @@ export default function MegaMenu({
                 tabIndex={0}
                 aria-label={it.label}
               >
-                <div className="text-sm font-semibold text-gray-900 group-hover:text-blue-900">{it.label}</div>
+                <div className="text-sm font-semibold text-neutral-900 group-hover:text-emerald-900">
+                  {it.label}
+                </div>
                 {it.description ? (
-                  <p className="mt-1 text-sm text-gray-600">{it.description}</p>
+                  <p className="mt-1 text-sm text-neutral-600">{it.description}</p>
                 ) : null}
               </Link>
             ))}

@@ -74,7 +74,7 @@ PLANS = [
 ]
 
 class Command(BaseCommand):
-    help = "Seed Email Hosting plans (names & benefits) to mirror NameHero’s structure."
+    help = "Seed Email Hosting plans (names & benefits) to mirror Hosting Malaysia’s structure."
 
     def add_arguments(self, parser):
         parser.add_argument("--reset", action="store_true", help="Delete existing 'email' plans before seeding")

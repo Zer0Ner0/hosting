@@ -1,7 +1,6 @@
-import React, { memo, ReactNode, useMemo } from "react";
+import React, { ReactNode } from "react";
 
 export type FAQItem = { q: string; a: ReactNode };
-
 
 export type FAQProps = {
   /** Collapsible Q&A list */
@@ -14,7 +13,7 @@ export type FAQProps = {
   defaultOpenIndex?: number | null;
 };
 
-const ChevronIcon = memo(function ChevronIcon() {
+function ChevronIcon(): JSX.Element {
   return (
     <svg
       className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180"
@@ -29,13 +28,13 @@ const ChevronIcon = memo(function ChevronIcon() {
       />
     </svg>
   );
-});
+}
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 }
 
-const FAQEntry = memo(function FAQEntry({
+function FAQEntry({
   item,
   index,
   defaultOpenIndex,
@@ -43,26 +42,33 @@ const FAQEntry = memo(function FAQEntry({
   item: FAQItem;
   index: number;
   defaultOpenIndex?: number | null;
-}) {
-  const id = useMemo(() => `faq-${slugify(item.q)}-${index}`, [item.q, index]);
+}): JSX.Element {
+  const id = `faq-${slugify(item.q)}-${index}`;
   const open = defaultOpenIndex === index;
+
   return (
-    <details
-      className="group"
-      aria-labelledby={`${id}-summary`}
-      {...(open ? { open: true } : {})}
-    >
-      <summary
-        id={`${id}-summary`}
-        className="flex cursor-pointer list-none items-center justify-between px-5 py-4 outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+    <li role="listitem" className="contents">
+      <details
+        className="group"
+        aria-labelledby={`${id}-summary`}
+        {...(open ? { open: true } : {})}
       >
-        <span className="text-left text-base font-medium">{item.q}</span>
-        <ChevronIcon />
-      </summary>
-      <div className="px-5 pb-5 pt-0 text-sm text-current">{item.a}</div>
-    </details>
+        <summary
+          id={`${id}-summary`}
+          className="flex cursor-pointer items-center justify-between px-5 py-4 outline-none focus-visible:ring-2 focus-visible:ring-[#14532d] focus-visible:ring-offset-2 focus-visible:ring-offset-white list-none [&::-webkit-details-marker]:hidden hover:bg-transparent active:bg-transparent"
+        >
+          <span className="text-left font-sans text-base font-medium text-neutral-900">
+            {item.q}
+          </span>
+          <ChevronIcon />
+        </summary>
+        <div className="px-5 pb-5 pt-0 font-sans text-sm text-neutral-700">
+          {item.a}
+        </div>
+      </details>
+    </li>
   );
-});
+}
 
 export default function FAQ({
   items,
@@ -71,39 +77,44 @@ export default function FAQ({
   ariaLabel,
   defaultOpenIndex = null,
 }: FAQProps): JSX.Element {
-  const sectionLabel = useMemo(() => {
-    if (ariaLabel) return ariaLabel;
-    if (heading) return heading;
-    if (subheading) return subheading;
-    return "Frequently Asked Questions";
-  }, [ariaLabel, heading, subheading]);
+  const sectionLabel = ariaLabel ?? heading ?? subheading ?? "Frequently Asked Questions";
 
   return (
     <section
-      className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-20"
+      className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8"
       aria-label={sectionLabel}
     >
       {(heading || subheading) && (
         <header className="mb-8 text-center">
-          {heading && <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{heading}</h2>}
-          {subheading && <p className="mt-2 text-muted-foreground">{subheading}</p>}
+          {heading && (
+            <h2 className="font-heading text-neutral-900 text-3xl font-semibold tracking-tight sm:text-4xl">
+              {heading}
+            </h2>
+          )}
+          {subheading && (
+            <p className="font-sans mt-2 text-gray-600">{subheading}</p>
+          )}
         </header>
       )}
 
-      {(!items || items.length === 0) ? (
-          <p className="text-center text-sm text-white">No questions yet.</p>
+      {!items || items.length === 0 ? (
+        <p className="font-sans text-center text-sm text-gray-500">
+          No questions yet.
+        </p>
       ) : (
-        <div className="rounded-2xl shadow-sm" role="list">
+        <ul
+          className="rounded-2xl border border-neutral-200 bg-white divide-y divide-neutral-200"
+          role="list"
+        >
           {items.map((item, idx) => (
-            <div role="listitem" key={`${item.q}-${idx}`} className="contents">
-              <FAQEntry item={item} index={idx} defaultOpenIndex={defaultOpenIndex ?? undefined} />
-              {/* explicit divider between items */}
-              {idx < items.length - 1 && (
-                  <div aria-hidden="true" className="mx-5 h-px bg-white/50" />
-                )}
-            </div>
+            <FAQEntry
+              key={`${item.q}-${idx}`}
+              item={item}
+              index={idx}
+              defaultOpenIndex={defaultOpenIndex ?? undefined}
+            />
           ))}
-        </div>
+        </ul>
       )}
     </section>
   );

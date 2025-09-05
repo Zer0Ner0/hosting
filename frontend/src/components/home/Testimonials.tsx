@@ -1,89 +1,151 @@
-import React, { memo } from 'react'
+import React, { memo } from 'react';
 
-type Rating = 1 | 2 | 3 | 4 | 5
-interface Testimonial {
-  name: string
-  role: string
-  rating: Rating
-  quote: string
-}
+/* ===========================
+   Types
+=========================== */
+export type Rating = 1 | 2 | 3 | 4 | 5;
 
+export type Testimonial = {
+  name: string;
+  role: string;
+  rating: Rating;
+  quote: string;
+};
+
+export type TestimonialsProps = {
+  /** Optional override to supply testimonials from CMS/API */
+  items?: ReadonlyArray<Testimonial>;
+  /** Section heading (H2) */
+  heading?: string;
+  /** Optional copy under heading */
+  subheading?: string;
+  /** Accessible label when no heading/subheading is present */
+  ariaLabel?: string;
+};
+
+/* ===========================
+   Defaults
+=========================== */
 const DEFAULT_TESTIMONIALS: ReadonlyArray<Testimonial> = [
-  { name: 'Ahmad Zulkifli', role: 'Small Business Owner, Johor', rating: 5,
-    quote: 'Saya sangat puas hati dengan servis MyHosting. Mudah, cepat dan harga pun berpatutan!' },
-  { name: 'Nurul Izzah', role: 'Freelance Web Designer, Penang', rating: 5,
-    quote: 'Support 24 jam memang terbaik. Sangat sesuai untuk client saya yang perlukan hosting segera.' },
-  { name: 'Jason Lim', role: 'eCommerce Founder, KL', rating: 4,
-    quote: 'Saya suka interface yang senang guna. Domain & hosting semua settle dalam masa sejam!' },
-] as const
+  {
+    name: 'Ahmad Zulkifli',
+    role: 'Small Business Owner, Johor',
+    rating: 5,
+    quote:
+      'Saya sangat puas hati dengan servis MyHosting. Mudah, cepat dan harga pun berpatutan!',
+  },
+  {
+    name: 'Nurul Izzah',
+    role: 'Freelance Web Designer, Penang',
+    rating: 5,
+    quote:
+      'Support 24 jam memang terbaik. Sangat sesuai untuk client saya yang perlukan hosting segera.',
+  },
+  {
+    name: 'Jason Lim',
+    role: 'eCommerce Founder, KL',
+    rating: 4,
+    quote:
+      'Saya suka interface yang senang guna. Domain & hosting semua settle dalam masa sejam!',
+  },
+] as const;
 
-interface StarRatingProps {
-  rating: Rating
-}
-const StarRating = memo(function StarRating({ rating }: StarRatingProps): React.ReactElement {
-  // Decorative stars with an accessible label
+/* ===========================
+   Subcomponents
+=========================== */
+const StarRating = memo(function StarRating({
+  rating,
+}: {
+  rating: Rating;
+}): JSX.Element {
+  // Decorative stars with a readable label
   return (
-    <div className="flex justify-center mb-3" role="img" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex justify-center md:justify-start" role="img" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }, (_, i) => {
-        const filled = i < rating
+        const filled = i < rating;
         return (
           <span
             key={i}
             aria-hidden="true"
-            className={`text-xl ${filled ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`text-base sm:text-lg ${filled ? 'text-[#FACC15]' : 'text-gray-300'}`}
           >
-            {filled ? '★' : '☆'}
+            ★
           </span>
-        )
+        );
       })}
     </div>
-  )
-})
+  );
+});
 
-interface CardProps {
-  t: Testimonial
-}
-const TestimonialCard = memo(function TestimonialCard({ t }: CardProps): React.ReactElement {
+const TestimonialCard = memo(function TestimonialCard({
+  t,
+}: {
+  t: Testimonial;
+}): JSX.Element {
   return (
-    <figure className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition text-left md:text-center">
-      <StarRating rating={t.rating} />
-      <blockquote className="mb-4">
-        <p className="italic text-gray-700">“{t.quote}”</p>
-      </blockquote>
-      <figcaption className="md:flex md:flex-col md:items-center">
-        <h4 className="font-semibold text-gray-900">{t.name}</h4>
-        <p className="text-sm text-gray-500">{t.role}</p>
+    <figure className="flex h-full flex-col justify-between rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+      <div>
+        <StarRating rating={t.rating} />
+        <blockquote className="mt-3">
+          <p className="font-sans italic leading-relaxed text-neutral-800">“{t.quote}”</p>
+        </blockquote>
+      </div>
+      <figcaption className="mt-6">
+        <p className="font-heading text-base font-semibold text-neutral-900">{t.name}</p>
+        <p className="font-sans text-sm text-neutral-600">{t.role}</p>
       </figcaption>
     </figure>
-  )
-})
+  );
+});
 
-interface Props {
-  /** Optional override to supply testimonials from CMS/API */
-  items?: ReadonlyArray<Testimonial>
-  /** Optional override for the section heading */
-  heading?: string
-}
-
+/* ===========================
+   Component
+=========================== */
 export default function Testimonials({
   items = DEFAULT_TESTIMONIALS,
-  heading = 'Trusted by Hundreds of Malaysians',
-}: Props): React.ReactElement {
-  const hasItems = items.length > 0
+  heading = 'Apa kata pelanggan kami',
+  subheading,
+  ariaLabel,
+}: TestimonialsProps): JSX.Element {
+  const hasItems = items && items.length > 0;
+  const headingId = 'testimonials-heading';
+  const sectionAria = ariaLabel || heading || 'Testimonials';
 
   return (
-    <section className="py-16" aria-labelledby="testimonials-heading">
-      <div className="container mx-auto px-4 text-center">
-        <h2 id="testimonials-heading" className="text-3xl font-bold mb-10 text-white">
-          {heading}
-        </h2>
+    <section
+      className="bg-[#F9FAFB] py-16"
+      aria-labelledby={heading ? headingId : undefined}
+      aria-label={!heading ? sectionAria : undefined}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {(heading || subheading) && (
+          <header className="mb-10 text-center">
+            {heading && (
+              <h2
+                id={headingId}
+                className="font-heading text-3xl font-semibold tracking-tight text-neutral-900 sm:text-4xl"
+              >
+                {heading}
+              </h2>
+            )}
+            {subheading && (
+              <p className="mt-2 font-sans text-neutral-700">{subheading}</p>
+            )}
+          </header>
+        )}
 
         {!hasItems ? (
-          <p className="text-gray-200">No testimonials yet.</p>
+          <p className="text-center font-sans text-sm text-neutral-500">
+            No testimonials yet.
+          </p>
         ) : (
-          <ul role="list" className="grid md:grid-cols-3 gap-8">
-            {items.map((t) => (
-              <li role="listitem" key={`${t.name}-${t.role}`}>
+          <ul
+            role="list"
+            aria-live="polite"
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {items.map((t, idx) => (
+              <li key={`${t.name}-${idx}`} role="listitem" className="h-full">
                 <TestimonialCard t={t} />
               </li>
             ))}
@@ -91,5 +153,5 @@ export default function Testimonials({
         )}
       </div>
     </section>
-  )
+  );
 }

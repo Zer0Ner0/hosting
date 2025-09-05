@@ -1,11 +1,20 @@
+// frontend/src/components/home/TrustBar.tsx
+
 import React from 'react'
 import Image from 'next/image'
 
-interface Brand {
+/**
+ * Brand logo item for the TrustBar.
+ */
+export interface Brand {
   src: string
   alt: string
 }
 
+/**
+ * Default brand set shown when no items are provided.
+ * Uses SVGs placed in /public/images/brands.
+ */
 export const BRANDS: ReadonlyArray<Brand> = [
   { src: '/images/brands/cpanel.svg', alt: 'cPanel' },
   { src: '/images/brands/litespeed.svg', alt: 'LiteSpeed' },
@@ -14,37 +23,54 @@ export const BRANDS: ReadonlyArray<Brand> = [
   { src: '/images/brands/wordpress.svg', alt: 'WordPress' },
 ] as const
 
-interface Props {
+export interface TrustBarProps {
   /** Override the default list of brand logos */
-  items?: ReadonlyArray<Brand>
+  readonly items?: ReadonlyArray<Brand>
   /** Accessible label for the section heading (visually hidden) */
-  heading?: string
+  readonly heading?: string
   /** Optional className passthrough for outer section */
-  className?: string
+  readonly className?: string
   /** Reduce visual prominence (adds opacity) */
-  muted?: boolean
+  readonly muted?: boolean
+  /**
+   * Provide a unique id for the heading to avoid duplicate ids
+   * when rendering multiple TrustBar components on the same page.
+   */
+  readonly headingId?: string
 }
 
+/**
+ * TrustBar: Compact strip of trusted technology/partner logos.
+ * - Semantic <section> with an accessible (visually hidden) heading
+ * - Empty state message when no brands are provided
+ * - No client-only APIs; safe as a Server Component
+ */
 export default function TrustBar({
   items = BRANDS,
   heading = 'Trusted technology powering our hosting',
   className = '',
   muted = true,
-}: Props): React.ReactElement {
-  const hasItems = items.length > 0
+  headingId = 'trustbar-heading',
+}: TrustBarProps): React.ReactElement {
+  const hasItems: boolean = items.length > 0
 
   return (
     <section
       className={`bg-white ${className}`}
-      aria-labelledby="trustbar-heading"
+      aria-labelledby={headingId}
     >
       <div className="mx-auto max-w-7xl px-4 py-6">
-        <h2 id="trustbar-heading" className="sr-only">
+        <h2 id={headingId} className="sr-only font-heading">
           {heading}
         </h2>
 
         {!hasItems ? (
-          <p className="text-center text-sm text-gray-500">No partner brands yet.</p>
+          <p
+            className="text-center text-sm text-gray-500"
+            aria-live="polite"
+          >
+            No partner brands yet.
+          </p>
         ) : (
           <ul
             role="list"
