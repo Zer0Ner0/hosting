@@ -33,17 +33,17 @@ export default function Navbar(): JSX.Element {
   const scheduleCloseHosting = React.useCallback((): void => {
     clearTimer();
     // gentle delay to avoid flicker when moving between trigger and panel
-    closeTimer.current = window.setTimeout(() => setHostingOpen(false), 200);
+    closeTimer.current = window.setTimeout(() => setHostingOpen(false), 350);
   }, [clearTimer]);
 
   const cancelCloseHosting = React.useCallback((): void => {
     clearTimer();
   }, [clearTimer]);
 
-  // Return focus to trigger when menu closes (keyboard users)
-  React.useEffect(() => {
-    if (!hostingOpen) triggerRef.current?.focus();
-  }, [hostingOpen]);
+
+  // (Optional) If you want to return focus for keyboard users only,
+  // you can re-introduce a conditional focus routine later.
+  // Removing auto-focus avoids post-click highlight on the trigger.
 
   const HOSTING_ITEMS: MegaMenuItem[] = React.useMemo(
     () => [
@@ -61,38 +61,6 @@ export default function Navbar(): JSX.Element {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Close mega when pointer leaves the header area
-  React.useEffect(() => {
-    if (!hostingOpen) return;
-
-    const handleMouseMove = (e: MouseEvent): void => {
-      const el = headerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const VBUFFER = 12; // small vertical buffer
-
-      const withinX = e.clientX >= rect.left && e.clientX <= rect.right;
-      const withinY = e.clientY >= rect.top - VBUFFER && e.clientY <= rect.bottom + VBUFFER;
-
-      if (!(withinX && withinY)) {
-        // Clearly below header? close immediately, else schedule gentle close
-        if (e.clientY > rect.bottom + VBUFFER) {
-          setHostingOpen(false);
-        } else {
-          clearTimer();
-          closeTimer.current = window.setTimeout(() => setHostingOpen(false), 150);
-        }
-      }
-    };
-
-    document.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      clearTimer();
-    };
-  }, [hostingOpen, clearTimer]);
 
   // Close mega when opening mobile menu
   React.useEffect(() => {
@@ -147,7 +115,8 @@ export default function Navbar(): JSX.Element {
                   aria-haspopup="true"
                   aria-expanded={hostingOpen}
                   className={[
-                    "rounded-lg px-3 py-2 text-sm font-medium",
+                    // Keep hover styles; add focus-visible ring (keyboard only), not filled background
+                    "rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200",
                     hostingOpen ? "bg-blue-50 text-blue-900" : "text-gray-700 hover:bg-gray-50",
                   ].join(" ")}
                   onMouseEnter={openHosting}

@@ -48,18 +48,18 @@ const FAQEntry = memo(function FAQEntry({
   const open = defaultOpenIndex === index;
   return (
     <details
-      className="group focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
+      className="group"
       aria-labelledby={`${id}-summary`}
       {...(open ? { open: true } : {})}
     >
       <summary
         id={`${id}-summary`}
-        className="flex cursor-pointer list-none items-center justify-between px-5 py-4 outline-none"
+        className="flex cursor-pointer list-none items-center justify-between px-5 py-4 outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
       >
         <span className="text-left text-base font-medium">{item.q}</span>
         <ChevronIcon />
       </summary>
-      <div className="px-5 pb-5 pt-0 text-sm text-gray-600">{item.a}</div>
+      <div className="px-5 pb-5 pt-0 text-sm text-current">{item.a}</div>
     </details>
   );
 });
@@ -80,7 +80,7 @@ export default function FAQ({
 
   return (
     <section
-      className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8"
+      className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-20"
       aria-label={sectionLabel}
     >
       {(heading || subheading) && (
@@ -91,15 +91,19 @@ export default function FAQ({
       )}
 
       {(!items || items.length === 0) ? (
-          <p className="text-center text-sm text-gray-500">No questions yet.</p>
+          <p className="text-center text-sm text-white">No questions yet.</p>
       ) : (
-          <div className="divide-y rounded-2xl border shadow-sm" role="list">
-              {items.map((item, idx) => (
-                  <div role="listitem" key={`${item.q}-${idx}`} className="contents">
-                      <FAQEntry item={item} index={idx} defaultOpenIndex={defaultOpenIndex ?? undefined} />
-                  </div>
-              ))}
-          </div>
+        <div className="rounded-2xl shadow-sm" role="list">
+          {items.map((item, idx) => (
+            <div role="listitem" key={`${item.q}-${idx}`} className="contents">
+              <FAQEntry item={item} index={idx} defaultOpenIndex={defaultOpenIndex ?? undefined} />
+              {/* explicit divider between items */}
+              {idx < items.length - 1 && (
+                  <div aria-hidden="true" className="mx-5 h-px bg-white/50" />
+                )}
+            </div>
+          ))}
+        </div>
       )}
     </section>
   );

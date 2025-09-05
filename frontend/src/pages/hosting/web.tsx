@@ -1,4 +1,6 @@
+'use client';
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import TrustBar from "@/components/home/TrustBar";
@@ -7,6 +9,7 @@ import BenefitsStrip from "@/components/common/BenefitsStrip";
 import TablePlans from "@/components/home/TablePlans";
 import PlanComparison from "@/components/home/PlanComparison";
 import Image from "next/image";
+import Testimonials from "@/components/home/Testimonials";
 
 export default function WebHostingPage() {
   const router = useRouter();
@@ -31,26 +34,197 @@ export default function WebHostingPage() {
     setTimeout(tick, 0);
   }, [router.asPath]);
 
-  const faqs = [
+  interface FAQItem {
+    q: string;
+    a: ReactNode;
+  }
+  const faqs: FAQItem[] = [
     {
-      q: "What’s included with Web Hosting?",
-      a: "Free SSL, malware scanning, daily backups, and 24/7 support. You can upgrade resources anytime.",
+      q: "What is website hosting?",
+      a: (
+        <p className="p-4">
+          Web hosting is a service is a company that hosts and stores a website to make it available on the Internet. Web hosting allows you to publish your website online by providing the infrastructure and technology needed for a site to be accessed online. A web host gives website owners storage space for their site and a range of other features, often including a free domain and a website builder, as we do at NameHero.
+        </p>
+      ),
     },
     {
-      q: "Can I migrate my existing site?",
-      a: "Yes. Start a plan, give us your current host login or a backup, and we’ll help you move with minimal downtime.",
+      q: "What is a web hosting package?",
+      a: (
+        <p className="p-4">
+          A hosting plan is a package of features that you can select for the hosting of your website. Hosting plans vary in price, features, storage, and how many websites they can host. If you need web hosting for multiple sites, for example, you would need to choose a hosting plan that offers this feature. Web hosting providers typically offer a range of packages for you to choose from, including features like dedicated hosting, WordPress hosting, and even a free domain.
+        </p>
+      ),
     },
     {
-      q: "Is there a traffic limit?",
-      a: "Plans are sized by resources (CPU/RAM/storage). If you outgrow a plan, upgrade instantly without migration.",
+      q: "What is shared and dedicated hosting?",
+      a: (
+        <p className="p-4">
+          Shared hosting and dedicated hosting are two different types of web hosting services offered by providers. Shared hosting is when multiple websites share a single server and its resources, including CPU, RAM, and storage space. Dedicated hosting is when a website is hosted on a dedicated server only used by one client—you’ll have your own server that you can manage. The choice between a dedicated server or a single server depends on the specific needs of your business and your budget.
+        </p>
+      ),
     },
     {
-      q: "Do you support custom domains?",
-      a: "Absolutely. Search and register a new domain here, or connect one you already own via simple DNS updates.",
+      q: "What is WordPress hosting?",
+      a: (
+        <p className="p-4">
+          WordPress hosting is a type of web hosting specifically designed for hosting a WordPress website. This type of web hosting usually includes WordPress software, automatic updates, and caching technology. This is a great option for people who want to create and manage WordPress websites without having to worry about technical aspects such as security and configuration.
+        </p>
+      ),
+    },
+    {
+      q: "What is a virtual private server?",
+      a: (
+        <p className="p-4">
+          A virtual private server (VPS) is a type of web hosting that provides a virtualized environment on a shared physical server. As a result, multiple VPS instances can run on a single server, with each VPS having an operating system, CPU, and memory.
+        </p>
+      ),
+    },
+    {
+      q: "What is VPS hosting?",
+      a: (
+        <p className="p-4">
+          VPS hosting is when a website is hosted on a virtualized server on a shared physical server. Providers usually offer VPS hosting plans that give clients flexibility and control over dedicated hosting.
+        </p>
+      ),
+    },
+    {
+      q: "What are dedicated servers?",
+      a: (
+        <p className="p-4">
+          A dedicated server is a type of web hosting that includes a client leasing an entire physical server that is only meant to host their specific website. Clients are in complete control when they select dedicated hosting, including being able to customize the server settings and manage security.
+        </p>
+      ),
+    },
+    {
+      q: "What is email hosting?",
+      a: (
+        <p className="p-4">
+          Email hosting is a type of web hosting designed specifically for hosting email accounts. This type of web hosting includes email storage, spam filtering, backups, and security features.
+        </p>
+      ),
+    },
+    {
+      q: "What is a website builder?",
+      a: (
+        <p className="p-4">
+          A website builder is a tool, often provided by a hosting service, that allows clients to create a website from scratch. Many hosting companies include access to a website builder in their hosting plans.
+        </p>
+      ),
+    },
+    {
+      q: "What is cPanel?",
+      a: (
+        <p className="p-4">
+          cPanel is a popular web hosting control panel for managing a hosting account. At NameHero, we put our clients in the driver’s seat with a control panel that allows you to manage your account quickly and easily.
+        </p>
+      ),
+    },
+    {
+      q: "What Is LiteSpeed Web Server?",
+      a: (
+        <p className="p-4">
+          LiteSpeed web server (LSWS) is a high-performance Apache drop-in replacement. LSWS is the fourth most popular server on the internet and the number one choice in commercial environments. Performance can be up to 20 times faster than Apache, with a small memory footprint and increased scalability.
+        </p>
+      ),
+    },
+    {
+      q: "What Is MariaDB?",
+      a: (
+        <p className="p-4">
+          MariaDB is a drop-in replacement for MySQL data, following the same schemas and structure. It is compatible with your current scripts and software that require mySQL. The difference is faster and safer data replication.
+        </p>
+      ),
+    },
+    {
+      q: "What uptime guarantee do you provide?",
+      a: (
+        <p className="p-4">
+          We proudly provide a 99.9% website uptime guarantee (not network or server, however).{" "}
+          <a href="/uptime" className="underline">View The Facts</a>.
+        </p>
+      ),
+    },
+    {
+      q: "Where are your servers located?",
+      a: (
+        <p className="p-4">
+          Our servers are located in Lansing, Michigan, USA and Lenexa, Kansas, USA. Test the speed{" "}
+          <b>
+            <a
+              href="https://kcdc-speedtest.namehero.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Test the speed here - open in a new tab"
+              className="underline"
+            >
+              here
+            </a>
+          </b>.
+        </p>
+      ),
+    },
+    {
+      q: "What are my limits per cPanel?",
+      a: (
+        <ul className="p-4 list-disc pl-8">
+          <li><b>Disk Space:</b> Unlimited Storage</li>
+          <li><b>Bandwidth:</b> Unmetered Bandwidth</li>
+          <li><b>Physical Memory:</b> Allocated per package (see comparison table)</li>
+          <li><b>Concurrent Connections:</b> 50</li>
+          <li><b>Number of Processes:</b> 100</li>
+          <li><b>I/O Limit:</b> 8MB/s</li>
+          <li><b>I/O operations per second:</b> 1024</li>
+          <li><b>Inodes:</b> Allocated per package (see comparison table)</li>
+        </ul>
+      ),
+    },
+    {
+      q: "What is unmetered bandwidth?",
+      a: (
+        <p className="p-4">
+          When hosting providers include unmetered bandwidth in their packages, they sell unlimited bandwidth or data transfer to their clients. Having unmetered bandwidth means there are no caps or limits on how much data a website can transfer each month without additional costs.
+        </p>
+      ),
+    },
+    {
+      q: "What happens if I need more limits per cPanel?",
+      a: (
+        <p className="p-4">
+          We handle this on a case-by-case basis. Sometimes we can upgrade your current package and move to a Managed VPS or Cloud Dedicated Server (we move all the data, you just have to pay the package difference). Scaling with NameHero is easy!
+        </p>
+      ),
+    },
+    {
+      q: "Can you transfer my existing websites from my previous web host?",
+      a: (
+        <p className="p-4">
+          We'll transfer your website for free within the first 30 days. If you require transfers outside of this time frame, we will either charge you a fee or provide you with resources to do this yourself.
+        </p>
+      ),
+    },
+    {
+      q: "Do you allow adult content?",
+      a: (
+        <p className="p-4">
+          No. We do not allow content that could be considered adult in nature on any package at NameHero.
+        </p>
+      ),
+    },
+    {
+      q: "Do you provide SSH access?",
+      a: (
+        <p className="p-4">
+          Yes, we can provide "Jailshelled" SSH access on all our accounts. To enable this on your account, please open a new support ticket, and our team of SuperHeroes will provide further instructions.
+        </p>
+      ),
     },
   ];
 
-  const benefits = [
+  interface BenefitItem {
+    title: string;
+    desc: string;
+  }
+  const benefits: BenefitItem[] = [
     { title: "Free SSL & daily backups", desc: "Security by default with one-click restore." },
     { title: "24/7 expert support", desc: "Humans who actually fix things—fast." },
     { title: "NVMe + HTTP/3 stack", desc: "Low TTFB and blazing page loads." },
@@ -67,44 +241,57 @@ export default function WebHostingPage() {
         />
       </Head>
 
-      {/* HERO — full-bleed, dark overlay, fluid aspect (1792:728) with no inner padding */}
-      <section className="relative isolate overflow-hidden">
-        {/* background image */}
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/hero-section.svg"
-            alt="Fast NVMe Web Hosting"
-            fill
-            priority
-            className="object-cover"
-          />
-          {/* <div className="absolute inset-0 bg-black/55" /> */}
-        </div>
-        {/* keep 1792:728 proportion on small screens; lock height on md+ */}
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8"
-            style={{ minHeight: "min(728px, 85vh)" }}>
-            <div className="w-full text-center text-white">
-              <h1 className="mx-auto max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                Award Winning Web Hosting In Just A Few Clicks
-              </h1>
-              <ul className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-6 text-lg opacity-90 max-w-4xl">
-                <li className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">✓</span>
-                  <span><strong>Blazing Fast</strong> Website Speed</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">✓</span>
-                  <span><strong>Easy To Use,</strong> Guru-Free Platform</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">✓</span>
-                  <span><strong>Reliable Hosting</strong> That Scales</span>
-                </li>
-              </ul>
-              <p className="mt-3 text-base">Proudly Trusted By Over
-                <span className="font-semibold"> 750,000+ Websites</span>
-              </p>
+      {/* HERO — NameHero-style with background image (fluid 1792:728) */}
+      <section className="relative overflow-hidden bg-white" aria-label="Hero: Fast hosting and domains">
+        <div className="mx-auto w-full max-w-[1920px]">
+          {/* Aspect-ratio wrapper */}
+          <div className="relative aspect-[1792/728] min-h-[520px] sm:min-h-[560px] lg:min-h-[620px]">
+            {/* background image */}
+            <div className="absolute inset-0">
+              <Image
+                src="/images/hero-section.svg"
+                alt="Fast NVMe Web Hosting"
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+            {/* content */}
+            <div className="absolute inset-0">
+              <div className="mx-auto flex h-full max-w-5xl flex-col items-center justify-center text-center">
+                <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+                  Award Winning Web Hosting In Just A Few Clicks
+                </h1>
+                <p className="mx-auto mt-3 max-w-4xl text-base/7 text-white/90">
+                  <ul role="list" className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-4 text-lg opacity-90 max-w-4xl">
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white">✓</span>
+                      <span><strong>Blazing Fast</strong> Website Speed</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white">✓</span>
+                      <span><strong>Easy To Use,</strong> Guru-Free Platform</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white">✓</span>
+                      <span><strong>Reliable Hosting</strong> That Scales</span>
+                    </li>
+                  </ul>
+                </p>
+                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <a
+                    href="#packages"
+                    className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-0"
+                    aria-label="Browse hosting plans"
+                  >
+                    Get Started Now
+                  </a>
+                </div>
+                <p className="mt-6 text-sm text-white/80">
+                  Proudly trusted by over <span className="font-semibold text-white">40,000+</span> customers and{" "}
+                  <span className="font-semibold text-white">750,000+</span> websites.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -115,7 +302,7 @@ export default function WebHostingPage() {
 
       <BenefitsStrip items={benefits} />
 
-      <section aria-label="Popular plans" className="bg-white">
+      <section id="packages" aria-label="Popular plans" className="bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
           <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#000000] font-['DM_Sans']">
             Choose Your Web Hosting Plan
@@ -130,7 +317,7 @@ export default function WebHostingPage() {
       </section>
 
       {/* Feature Strip below FAQ */}
-      <section className="bg-white">
+      <section className="bg-white" aria-label="Key feature highlights">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Affordable Power */}
@@ -205,10 +392,10 @@ export default function WebHostingPage() {
       </section>
 
       {/* Why Choose Section */}
-      <section className="bg-blue-900">
+      <section className="bg-blue-900" aria-labelledby="why-choose-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
           {/* Header */}
-          <h2 className="text-[40px] font-extrabold text-center text-white leading-tight">
+          <h2 id="why-choose-heading" className="text-[40px] font-extrabold text-center text-white leading-tight">
             Why Choose YourBrand as Your Web Hosting Service Provider
           </h2>
 
@@ -220,7 +407,7 @@ export default function WebHostingPage() {
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Left text block */}
-            <div className="space-y-6 text-white">
+            <div className="space-y-6 text-white text-justify">
               <p className="text-[18px] leading-relaxed">
                 By choosing our web hosting services, you get guaranteed
                 lightning-fast site performance to ensure you create an
@@ -261,7 +448,7 @@ export default function WebHostingPage() {
       </section>
 
       {/* Managed WordPress Hosting On Steroids */}
-      <section className="">
+      <section aria-label="Managed WordPress Hosting">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
@@ -365,8 +552,8 @@ export default function WebHostingPage() {
       </section>
 
       {/* Powerful Cloud Hosting Solutions */}
-      <section className="bg-blue-900 text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
+      <section className="bg-blue-900 text-white" aria-label="Powerful cloud hosting">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             {/* Left content */}
@@ -405,45 +592,27 @@ export default function WebHostingPage() {
       {/* Detailed comparison table (DB-backed) */}
       <PlanComparison category="web" anchorId="web-comparison" />
 
-      <FAQ
-        items={faqs}
-        heading="Web Hosting FAQs"
-        subheading="Quick answers to common questions."
-      />
+      {/* SOCIAL PROOF */}
+      <section className="bg-blue-900" aria-label="Customer testimonials">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <Testimonials />
+        </div>
+      </section>
 
-      {/* Light comparison snapshot (in-page, no extra component file) */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
-          <h2 className="text-center text-3xl sm:text-4xl font-bold text-[#2F1C6A] font-['DM_Sans']">
-            How We Compare
-          </h2>
-          <div className="mt-8 overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 rounded-2xl border">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Feature</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-emerald-700">Our Web Hosting</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Typical Others</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {[
-                  ["NVMe storage", "Included", "SATA SSD / HDD"],
-                  ["LiteSpeed Web Server", "All plans", "Limited tiers"],
-                  ["Free SSL", "All domains", "Sometimes paid"],
-                  ["Daily Backups", "Yes", "Weekly or paid"],
-                  ["cPanel", "Yes", "Varies"],
-                  ["24/7 Support", "Yes", "Varies"],
-                ].map(([label, us, others]) => (
-                  <tr key={label}>
-                    <td className="px-4 py-3 text-sm">{label}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-emerald-700">{us}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{others}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+
+      {/* FAQ — blue section */}
+      <section
+        id="faqs"
+        aria-labelledby="faqs-heading"
+        className="text-black"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 [&_*]:text-black">
+          <FAQ
+            items={faqs}
+            heading="Frequently Asked Questions About Web Hosting"
+            subheading="Quick answers to common questions."
+          />
         </div>
       </section>
     </>

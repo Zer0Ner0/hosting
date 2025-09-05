@@ -61,11 +61,10 @@ const TldChip = memo(function TldChip({
       type="button"
       aria-pressed={active}
       onClick={() => onToggle(tld)}
-      className={`rounded-full border px-3 py-1 text-sm ${
-        active
-          ? `${isHero ? "bg-white/10 border-white/30 text-white" : "bg-black text-white"}`
-          : `${isHero ? "bg-white text-black" : "bg-white text-black hover:bg-gray-100"}`
-      }`}
+      className={`rounded-full border px-3 py-1 text-sm ${active
+        ? `${isHero ? "bg-white/10 border-white/30 text-white" : "bg-black text-white"}`
+        : `${isHero ? "bg-white text-black" : "bg-white text-black hover:bg-gray-100"}`
+        }`}
     >
       .{tld}
     </button>
@@ -105,11 +104,10 @@ const SuggestionCard = memo(function SuggestionCard({
           type="button"
           onClick={() => onAdd(s)}
           disabled={!s.available}
-          className={`rounded-md px-3 py-2 text-sm ${
-            s.available
-              ? "bg-blue-900 text-white hover:bg-blue-700"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
+          className={`rounded-md px-3 py-2 text-sm ${s.available
+            ? "bg-blue-900 text-white hover:bg-blue-700"
+            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }`}
           aria-disabled={!s.available}
         >
           {s.available ? "Add to cart" : "Unavailable"}
@@ -207,8 +205,8 @@ export default function DomainSearchBox({ variant = "default" }: Props): JSX.Ele
             type="text"
             placeholder="Find your new domain name"
             className={`w-full rounded-xl border px-4 py-3 ${isHero
-                ? "bg-white/95 text-black placeholder:text-gray-500"
-                : "bg-white"
+              ? "bg-white/95 text-black placeholder:text-gray-500"
+              : "bg-white"
               }`}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -218,7 +216,7 @@ export default function DomainSearchBox({ variant = "default" }: Props): JSX.Ele
           />
           <button
             type="submit"
-            className={`rounded-xl px-5 py-3 text-white hover:opacity-90 disabled:opacity-50 ${isHero ? "bg-emerald-600" : "bg-orange-500 hover:bg-orange-600"
+            className={`rounded-xl px-5 py-3 text-white hover:opacity-90 disabled:opacity-50 ${isHero ? "bg-blue-600" : "bg-orange-500 hover:bg-orange-600"
               }`}
             disabled={loading}
           >

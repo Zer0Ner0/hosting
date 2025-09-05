@@ -126,6 +126,8 @@ export default function MegaMenu({
       ].join(" ")}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      // (Optional) If you see occasional flicker crossing tiny gaps, switch to pointer events:
+      // onPointerEnter={onMouseEnter} onPointerLeave={onMouseLeave}
       onKeyDown={onKeyDown}
     >
       <div className="mx-auto max-w-7xl px-4">
@@ -142,8 +144,12 @@ export default function MegaMenu({
               <Link
                 key={it.label}
                 href={it.href}
-                className="group rounded-xl p-4 transition hover:bg-blue-50 focus:bg-blue-50 outline-none"
+                className="group rounded-xl p-4 transition hover:bg-blue-50 focus:outline-none focus-visible:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-200"
                 onClick={onClose}
+                onMouseDown={(e) => {
+                  // Prevent lingering focus highlight from mouse/touch clicks
+                  e.currentTarget.blur();
+                }}
                 ref={(el) => {
                   itemRefs.current[idx] = el;
                 }}

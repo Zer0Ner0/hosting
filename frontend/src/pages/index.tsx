@@ -9,7 +9,7 @@ import Testimonials from "@/components/home/Testimonials";
 import TrustBar from "@/components/home/TrustBar";
 import FeatureRow from "@/components/home/FeatureRow";
 import HighlightsStrip from "@/components/home/HighlightsStrip";
- 
+
 // Networking pattern: centralize API base
 const API_BASE: string = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
 const CATEGORIES = ["web", "wordpress", "email", "woocommerce"] as const;

@@ -85,7 +85,7 @@ function TableSkeleton() {
 export default function PlanComparison({
   category = 'web',
 }: {
-  category?: 'web' | 'wordpress' | 'email' | 'woocommerce',
+  category?: 'web' | 'wordpress' | 'email' | 'woocommerce' | 'basic',
 }) {
   const [plansWithSpecs, setPlansWithSpecs] = useState<PlanWithSpecs[]>([])
   const [planPrices, setPlanPrices] = useState<PlanPrice[]>([])
@@ -192,12 +192,14 @@ export default function PlanComparison({
 
         {/* Card wrapper */}
         <div className="mt-8 overflow-x-auto">
-          <div className="mx-auto max-w-[1200px] rounded-2xl shadow-xl ring-1 ring-gray-200 bg-white border-collapse border border-gray-200">
-            <table className="min-w-full table-fixed border-separate border-spacing-0" role="table">
+          <div className="mx-auto max-w-[700px] rounded-2xl shadow-xl ring-1 ring-gray-200 bg-white border-collapse border border-gray-200">
+            <table className="min-w-full table-auto border-separate border-spacing-0" role="table">
               <caption className="sr-only">Side-by-side hosting plan comparison</caption>
               <colgroup>
-                <col className="w-[260px]" />
-                {plansWithSpecs.map(p => (<col key={p.id} className="w-[235px]" />))}
+                <col className="w-auto" />
+                {plansWithSpecs.map(p => (
+                  <col key={p.id} className="w-[1fr]" />
+                ))}
               </colgroup>
 
               {/* Header */}
@@ -243,45 +245,50 @@ export default function PlanComparison({
                 ))}
               </tbody>
 
-              {/* Price + CTA row */}
-              <tfoot>
-                <tr>
-                  <td className="px-6 py-6 border-t border-r border-gray-200"></td>
-                  {planPrices.map(plan => (
-                    <td key={plan.id} className="px-4 py-6 align-top border-t border-r last:border-r-0 border-gray-200">
-                      <div className="mx-auto w-full max-w-[220px] bg-white p-4 text-center">
-                        {(plan.originalPrice || plan.savePercentage) && (
-                          <div className="mb-2">
-                            {plan.originalPrice && (
-                              <span className="text-sm text-[#727586] line-through mr-2">
-                                {currency(plan.originalPrice)}
-                              </span>
-                            )}
-                            {plan.savePercentage && (
-                              <span className="inline-block rounded-full bg-[#FFEED6] px-2 py-0.5 text-xs font-semibold text-orange-700">
-                                Save {plan.savePercentage}
-                              </span>
-                            )}
+              {/* Price + CTA row (only for Web Hosting) */}
+              {category === 'web' && (
+                <tfoot>
+                  <tr>
+                    <td className="px-6 py-6 border-t border-r border-gray-200"></td>
+                    {planPrices.map(plan => (
+                      <td
+                        key={plan.id}
+                        className="px-4 py-6 align-top border-t border-r last:border-r-0 border-gray-200"
+                      >
+                        <div className="mx-auto w-full max-w-[220px] bg-white p-4 text-center">
+                          {(plan.originalPrice || plan.savePercentage) && (
+                            <div className="mb-2">
+                              {plan.originalPrice && (
+                                <span className="text-sm text-[#727586] line-through mr-2">
+                                  {currency(plan.originalPrice)}
+                                </span>
+                              )}
+                              {plan.savePercentage && (
+                                <span className="inline-block rounded-full bg-[#FFEED6] px-2 py-0.5 text-xs font-semibold text-orange-700">
+                                  Save {plan.savePercentage}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          <div className="mb-1">
+                            <span className="text-3xl font-extrabold text-[#0B2545] font-['DM_Sans']">
+                              {currency(plan.price)}
+                            </span>
+                            <span className="ml-1 align-top text-sm text-[#727586]">/mo</span>
                           </div>
-                        )}
-                        <div className="mb-1">
-                          <span className="text-3xl font-extrabold text-[#0B2545] font-['DM_Sans']">
-                            {currency(plan.price)}
-                          </span>
-                          <span className="ml-1 align-top text-sm text-[#727586]">/mo</span>
+                          <a
+                            href={`/checkout?plan_id=${plan.id}`}
+                            className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-orange-500 px-4 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none"
+                            aria-label={`Order ${plan.name} at ${currency(plan.price)} per month`}
+                          >
+                            Order now
+                          </a>
                         </div>
-                        <a
-                          href={`/checkout?plan_id=${plan.id}`}
-                          className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-orange-500 px-4 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none"
-                          aria-label={`Order ${plan.name} at ${currency(plan.price)} per month`}
-                        >
-                          Order now
-                        </a>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              </tfoot>
+                      </td>
+                    ))}
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </div>

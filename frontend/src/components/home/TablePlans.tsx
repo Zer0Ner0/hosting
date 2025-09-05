@@ -44,9 +44,8 @@ const CategoryTabs = memo(function CategoryTabs({ active, onChange }: TabsProps)
             aria-selected={active === c.key}
             aria-controls={`panel-${c.key}`}
             onClick={() => onChange(c.key)}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-              active === c.key ? 'bg-blue-900 text-white' : 'text-black hover:bg-[#F2F4FF]'
-            }`}
+            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${active === c.key ? 'bg-blue-900 text-white' : 'text-black hover:bg-[#F2F4FF]'
+              }`}
           >
             {c.label}
           </button>
@@ -75,7 +74,7 @@ export default function TablePlans({ fixedCategory }: Props): React.ReactElement
         try {
           setPlans(JSON.parse(cached))
           setLoading(false)
-        } catch {}
+        } catch { }
       }
     }
   }, [category, fixedCategory])
@@ -85,31 +84,31 @@ export default function TablePlans({ fixedCategory }: Props): React.ReactElement
     let alive = true
     const cat = (fixedCategory ?? category) as FixedCat
     const controller = new AbortController()
-    ;(async () => {
-      // only show spinner if nothing to show yet
-      setLoading((prev) => prev && plans.length === 0)
-      setError(null)
-      try {
-        const res = await fetch(`${API_BASE}/api/plans/?category=${cat}`, {
-          cache: 'no-store',
-          signal: controller.signal,
-        })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json: BackendPlanRaw[] = await res.json()
-        if (!alive) return
-        setPlans(json)
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem(`preload:prices:${cat}`, JSON.stringify(json))
+      ; (async () => {
+        // only show spinner if nothing to show yet
+        setLoading((prev) => prev && plans.length === 0)
+        setError(null)
+        try {
+          const res = await fetch(`${API_BASE}/api/plans/?category=${cat}`, {
+            cache: 'no-store',
+            signal: controller.signal,
+          })
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          const json: BackendPlanRaw[] = await res.json()
+          if (!alive) return
+          setPlans(json)
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem(`preload:prices:${cat}`, JSON.stringify(json))
+          }
+        } catch (e: unknown) {
+          if (controller.signal.aborted) return
+          if (!alive) return
+          console.error('Failed to load plans:', e)
+          setError(getErrorMessage(e))
+        } finally {
+          if (alive) setLoading(false)
         }
-      } catch (e: unknown) {
-        if (controller.signal.aborted) return
-        if (!alive) return
-        console.error('Failed to load plans:', e)
-        setError(getErrorMessage(e))
-      } finally {
-        if (alive) setLoading(false)
-      }
-    })()
+      })()
     return () => {
       alive = false
       controller.abort()
